@@ -1,0 +1,11 @@
+security/.settings
+security/target
+security/target-eclipse
+security/.classpath
+security/.project
+security/grails-security-*.zip
+test/.settings
+test/target
+test/target-eclipse
+test/.classpath
+test/.project

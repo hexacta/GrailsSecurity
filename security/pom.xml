@@ -1,0 +1,29 @@
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.hexacta</groupId>
+	<artifactId>security</artifactId>
+	<packaging>zip</packaging>
+	<version>1.0</version>
+	<name>Security Plugin</name>
+	<description>Security plugin for Grails</description>
+	<url>http://grails.org/plugin/security</url>
+	<developers>
+		<developer>
+			<name>Hexacta</name>
+			<email>hat@hexacta.com</email>
+		</developer>
+	</developers>
+	<dependencies>
+		<dependency>
+			<groupId>net.sourceforge.nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>1.9.15</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+</project>
