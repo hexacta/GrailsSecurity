@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.hexacta</groupId>
 	<artifactId>security</artifactId>
-	<packaging>zip</packaging>
+	<packaging>grails-app</packaging>
 	<version>1.0</version>
 	<name>Security Plugin</name>
 	<description>Security plugin for Grails</description>
