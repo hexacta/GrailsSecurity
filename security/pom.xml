@@ -14,6 +14,9 @@
 			<email>hat@hexacta.com</email>
 		</developer>
 	</developers>
+	<properties>
+		<grails.version>2.1.0</grails.version>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.grails</groupId>
