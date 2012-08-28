@@ -27,8 +27,8 @@
   </repositories>
   <dependencies>
     <compile>
-      <dependency group='xerces' name='xercesImpl' version='2.9.1' />
       <dependency group='net.sourceforge.nekohtml' name='nekohtml' version='1.9.15' />
+      <dependency group='xerces' name='xercesImpl' version='2.9.1' />
     </compile>
   </dependencies>
   <plugins />

@@ -6,9 +6,7 @@ class SecurityGrailsPlugin {
     // the other plugins this plugin depends on
     def dependsOn = [:]
     // resources that are excluded from plugin packaging
-    def pluginExcludes = [
-        "grails-app/views/error.gsp"
-    ]
+    def pluginExcludes = []
 
     def title = "Security Plugin" // Headline display name of the plugin
     def author = "Hexacta"
@@ -50,21 +48,21 @@ Security plugin based on the Authentication plugin
     }
 
     def doWithApplicationContext = { applicationContext ->
-	def gspResources
-	if(application.warDeployed){
-		gspResources = applicationContext.getResources("**/*.gsp")?.toList()
-	}
-	else {
-		gspResources = applicationContext.getResources("file:**/*.gsp")?.toList()
-	}
-	
-	def slurper = new XmlSlurper(new org.cyberneko.html.parsers.SAXParser())
-	for(resource in gspResources){
-		def htmlParser = slurper.parse(resource.file)
-		htmlParser.'**'.findAll { it.name().toLowerCase() == "security:id"}.each {
-			applicationContext.authenticationService.registerComponent(it.@id.text())
+		def gspResources
+		if(application.warDeployed){
+			gspResources = applicationContext.getResources("**/*.gsp")?.toList()
 		}
-	}
+		else {
+			gspResources = applicationContext.getResources("file:**/*.gsp")?.toList()
+		}
+		
+		def slurper = new XmlSlurper(new org.cyberneko.html.parsers.SAXParser())
+		for(resource in gspResources){
+			def htmlParser = slurper.parse(resource.file)
+			htmlParser.'**'.findAll { it.name().toLowerCase() == "security:id"}.each {
+				applicationContext.authenticationService.registerComponent(it.@id.text())
+			}
+		}
     }
 
     def onChange = { event ->

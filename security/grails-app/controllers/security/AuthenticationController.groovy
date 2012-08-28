@@ -1,7 +1,6 @@
 package security
 
-import grails.util.GrailsUtil
-import org.codehaus.groovy.grails.commons.GrailsApplication
+import grails.util.Environment
 
 import security.AuthenticatedUser
 import security.LoginForm
@@ -33,10 +32,9 @@ class AuthenticationController {
     }
 
     def index = {
-        // Display a page offering the appropriate options by default, but only in development!
-        if (GrailsUtil.environment != GrailsApplication.ENV_DEVELOPMENT) {
-            response.sendError(404)
-        }
+		if(Environment.DEVELOPMENT != Environment.current) {
+			log.warn("Using provided login")
+		}
     }
     
 	def login = { LoginForm form ->

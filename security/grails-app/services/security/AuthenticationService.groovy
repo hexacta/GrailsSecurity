@@ -447,8 +447,7 @@ class AuthenticationService {
 	}
 	
 	boolean hasRoles(roles) {
-		def closure = {role, value -> role.name.equals(value)
-		}
+		def closure = {role, value -> role.name.equals(value)}
 		return hasAccess(roles, closure)
 	}
 	
