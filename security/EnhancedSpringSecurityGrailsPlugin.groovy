@@ -1,4 +1,4 @@
-class SecurityGrailsPlugin {
+class EnhancedSpringSecurityGrailsPlugin {
     // the plugin version
     def version = "1.0"
     // the version or versions of Grails the plugin is designed for
@@ -8,7 +8,7 @@ class SecurityGrailsPlugin {
     // resources that are excluded from plugin packaging
     def pluginExcludes = []
 
-    def title = "Security Plugin" // Headline display name of the plugin
+    def title = "Enhanced Spring Security Plugin" // Headline display name of the plugin
     def author = "Hexacta"
     def authorEmail = "hat@hexacta.com"
     def description = '''\
@@ -16,7 +16,7 @@ Security plugin based on the Authentication plugin
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/security"
+    def documentation = "http://grails.org/plugin/enhanced-spring-security"
 
     // Extra (optional) plugin metadata
 
