@@ -1,11 +1,11 @@
-<plugin name='enhanced-spring-security' version='1.0' grailsVersion='2.1 &gt; *'>
+<plugin name='security' version='1.0' grailsVersion='2.1 &gt; *'>
   <author>Hexacta</author>
   <authorEmail>hat@hexacta.com</authorEmail>
-  <title>Enhanced Spring Security Plugin</title>
+  <title>Security Plugin</title>
   <description>Security plugin based on the Authentication plugin
 </description>
   <documentation>http://grails.org/plugin/enhanced-spring-security</documentation>
-  <type>EnhancedSpringSecurityGrailsPlugin</type>
+  <type>SecurityGrailsPlugin</type>
   <resources>
     <resource>security.SecurityFilters</resource>
     <resource>security.AuthenticationController</resource>
