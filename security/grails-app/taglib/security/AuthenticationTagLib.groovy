@@ -66,7 +66,7 @@ class AuthenticationTagLib {
 		    def u = session[AuthenticationService.SESSION_KEY_AUTH_USER]
 		    if (u) {
 		        def codec = attrs.codec != null ? (attrs.codec ?: 'HTML') : null
-		        def v = u[attrs.property ? attrs.property : 'login'] 
+		        def v = u.attributes[attrs.property ? attrs.property : 'login'] 
 			    out << (codec ? v?."encodeAs$codec"() : v)
 		    }
 		}

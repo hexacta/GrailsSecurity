@@ -2,11 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.hexacta</groupId>
-	<artifactId>security</artifactId>
+	<artifactId>enhanced-authentication</artifactId>
 	<packaging>grails-app</packaging>
 	<version>1.0</version>
-	<name>Security Plugin</name>
-	<description>Security plugin for Grails</description>
+	<name>Enchanced Authentication Plugin</name>
+	<description>Enhanced Authentication plugin for Grails</description>
 	<url>http://grails.org/plugin/security</url>
 	<developers>
 		<developer>

@@ -35,6 +35,11 @@ class AuthenticationController {
 		if(Environment.DEVELOPMENT != Environment.current) {
 			log.warn("Using provided login")
 		}
+		if(grailsApplication.config.enhanced?.authentication?.loginRedirect){
+			def loginRedirect = grailsApplication.config.enhanced?.authentication?.loginRedirect
+			authenticationService.nonAuthenticatedActions += loginRedirect
+			redirect(loginRedirect)
+		}
     }
     
 	def login = { LoginForm form ->

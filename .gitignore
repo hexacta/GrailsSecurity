@@ -3,7 +3,7 @@ security/target
 security/target-eclipse
 security/.classpath
 security/.project
-security/grails-security-*.zip
+security/grails-*.zip
 security/plugins
 test/.settings
 test/target

@@ -23,10 +23,12 @@ class AuthenticationService {
 	static final SESSION_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
 	static final REQUEST_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
 
+	static nonAuthenticatedActions = [[controller:'authentication', action:'*']] as Set
+	
     // We set this to true even though we don't directly use GORM
     // The event handlers are likely to require a transaction
 	boolean transactional = true
-	 
+	
 	def grailsApplication
 	
 	def bootstrap(){
@@ -51,6 +53,12 @@ class AuthenticationService {
 	def registerComponent(componentId) {
 		if(!Component.findByName(componentId)){
 			new Component(name: componentId).save()
+		}
+	}
+	
+	def needsAuthentication(controllerName, actionName){
+		!nonAuthenticatedActions.find {
+			(it.controller == controllerName) && ((it.action == '*') || (it.action == actionName))
 		}
 	}
 	
@@ -206,7 +214,12 @@ class AuthenticationService {
 		} else {
 			token.result = userStatusToResult(user.status)
 			token.userObjectId = user.id
-			token.attributes['role'] = user.role.name 
+			token.attributes['userObjectId'] = user.id
+			token.attributes['login'] = user.login
+			token.attributes['role'] = user.role.name
+			token.attributes['firstName'] = user.firstName
+			token.attributes['lastName'] = user.lastName
+			token.attributes['email'] = user.email
             setSessionUser(token)		    
 			doLoggedIn(token)
 		}
@@ -516,7 +529,7 @@ class AuthenticationService {
     	    return false // Indicate "don't carry on processing" as auth is required
         }
 
-        // do authorisation events
+        // do authorization events
         if (fireEvent("CheckAuthorized", [request: request, user: request.session.getAttribute(SESSION_KEY_AUTH_USER),
                 controllerName: request.getAttribute(GrailsApplicationAttributes.CONTROLLER_NAME_ATTRIBUTE), 
                 actionName: request.getAttribute(GrailsApplicationAttributes.ACTION_NAME_ATTRIBUTE) ] )) {

@@ -3,7 +3,6 @@ package security
 class Permission {
 	static final char SEPARATOR = ':'
 	static final String ALL="all"
-	static belongsTo = Role
 	ControllerConfiguration controller
 	Method method
 	

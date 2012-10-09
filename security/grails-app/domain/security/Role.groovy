@@ -2,11 +2,10 @@ package security
 
 class Role {
 	String name
-	static belongsTo = AuthenticationUser
 	static hasMany = [roles: Role, permissions: Permission, components: Component]
 	
     static constraints = {
-		name(blank:false)
+		name(blank:false, unique: true)
 		roles(nullable: true)
 		components(nullable: true)
 		permissions(nullable: true)
