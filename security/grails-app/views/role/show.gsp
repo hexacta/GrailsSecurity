@@ -1,4 +1,4 @@
-<%@ page import="security.Role" %>
+<%@ page import="com.hexacta.enhanced.authentication.Role" %>
 <!doctype html>
 <html>
 	<head>

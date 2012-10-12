@@ -8,17 +8,17 @@
   <type>EnhancedAuthenticationGrailsPlugin</type>
   <resources>
     <resource>security.SecurityFilters</resource>
-    <resource>security.AuthenticationController</resource>
-    <resource>security.AuthenticationUserController</resource>
-    <resource>security.RoleController</resource>
-    <resource>security.AuthenticationUser</resource>
-    <resource>security.Component</resource>
-    <resource>security.ControllerConfiguration</resource>
-    <resource>security.Method</resource>
-    <resource>security.Permission</resource>
-    <resource>security.Role</resource>
-    <resource>security.AuthenticationService</resource>
-    <resource>security.AuthenticationTagLib</resource>
+    <resource>com.hexacta.enhanced.authentication.AuthenticationController</resource>
+    <resource>com.hexacta.enhanced.authentication.AuthenticationUserController</resource>
+    <resource>com.hexacta.enhanced.authentication.RoleController</resource>
+    <resource>com.hexacta.enhanced.authentication.AuthenticationUser</resource>
+    <resource>com.hexacta.enhanced.authentication.Component</resource>
+    <resource>com.hexacta.enhanced.authentication.ControllerConfiguration</resource>
+    <resource>com.hexacta.enhanced.authentication.Method</resource>
+    <resource>com.hexacta.enhanced.authentication.Permission</resource>
+    <resource>com.hexacta.enhanced.authentication.Role</resource>
+    <resource>com.hexacta.enhanced.authentication.AuthenticationService</resource>
+    <resource>com.hexacta.enhanced.authentication.AuthenticationTagLib</resource>
   </resources>
   <repositories>
     <repository name='grailsCentral' url='http://grails.org/plugins' />
@@ -27,8 +27,8 @@
   </repositories>
   <dependencies>
     <compile>
-      <dependency group='net.sourceforge.nekohtml' name='nekohtml' version='1.9.15' />
       <dependency group='xerces' name='xercesImpl' version='2.9.1' />
+      <dependency group='net.sourceforge.nekohtml' name='nekohtml' version='1.9.15' />
     </compile>
   </dependencies>
   <plugins />

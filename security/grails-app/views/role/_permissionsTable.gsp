@@ -1,5 +1,5 @@
-<%@ page import="security.Role" %>
-<g:each in="${roleInstance?.permissions.sort {it.id} }" var="permission" status="i">
+<%@ page import="com.hexacta.enhanced.authentication.Role" %>
+<g:each in="${roleInstance?.permissions?.sort {it.id} }" var="permission" status="i">
 	<g:hiddenField name="permissions" value="${permission.id}" />
 </g:each>
 <g:if test="${flash.message}">
@@ -14,7 +14,7 @@
 		</tr>
 	</thead>
 	<tbody>
-	<g:each in="${roleInstance.permissions.sort { it.id }}" status="i" var="permissionInstance">
+	<g:each in="${roleInstance.permissions?.sort { it.id }}" status="i" var="permissionInstance">
 		<tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 			<td>${message(code: 'controller.'+permissionInstance.controller.label)}</td>
 			<td>${message(code: 'method.'+permissionInstance.method.label)}</td>

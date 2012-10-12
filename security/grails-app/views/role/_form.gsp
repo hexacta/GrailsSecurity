@@ -1,6 +1,6 @@
-<%@ page import="security.Role" %>
-<%@ page import="security.Component" %>
-<%@ page import="security.ControllerConfiguration" %>
+<%@ page import="com.hexacta.enhanced.authentication.Role" %>
+<%@ page import="com.hexacta.enhanced.authentication.Component" %>
+<%@ page import="com.hexacta.enhanced.authentication.ControllerConfiguration" %>
 <div class="fieldcontain ${hasErrors(bean: roleInstance, field: 'name', 'error')} required">
 	<label for="name">
 		<g:message code="role.name.label" default="Name" />
@@ -13,7 +13,7 @@
 	<label for="roles">
 		<g:message code="role.roles.label" default="Roles" />
 	</label>
-	<g:select name="roles" from="${security.Role.findAllByNameNotEqual(roleInstance.name)}" multiple="multiple" optionKey="id" size="5" value="${roleInstance?.roles*.id}" class="many-to-many"/>
+	<g:select name="roles" from="${Role.findAllByNameNotEqual(roleInstance.name)}" multiple="multiple" optionKey="id" size="5" value="${roleInstance?.roles*.id}" class="many-to-many"/>
 </div>
 
 <div class="fieldcontain">

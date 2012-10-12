@@ -1,4 +1,5 @@
-<%@ page import="security.AuthenticationUser" %>
+<%@ page import="com.hexacta.enhanced.authentication.AuthenticationUser" %>
+<%@ page import="com.hexacta.enhanced.authentication.Role" %>
 
 <div class="fieldcontain ${hasErrors(bean: authenticationUserInstance, field: 'login', 'error')} ">
 	<label for="login">
@@ -39,6 +40,6 @@
 	<label for="roles">
 		<g:message code="authenticationUser.roles.label" default="Roles" />
 	</label>
-	<g:select id="role" name="role.id" from="${security.Role.list()}" optionKey="id" required="" value="${authenticationUserInstance?.role?.id}" class="many-to-one"/>
+	<g:select id="role" name="role.id" from="${Role.list()}" optionKey="id" required="" value="${authenticationUserInstance?.role?.id}" class="many-to-one"/>
 </div>
 
