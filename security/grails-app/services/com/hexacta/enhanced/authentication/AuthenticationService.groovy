@@ -79,8 +79,10 @@ class AuthenticationService {
 		controllers = controllers.findAll { it.getClazz().isAnnotationPresent(Visible)}
 		controllers.each {
 			def conName= it.getLogicalPropertyName()
-			def conKey = it.getClazz().getAnnotation(Visible).key()
-			new ControllerConfiguration(name: conName, label: conKey).save()
+			if(!ControllerConfiguration.findByName(conName)){
+				def conKey = it.getClazz().getAnnotation(Visible).key()
+				new ControllerConfiguration(name: conName, label: conKey).save()
+			}
 		}
 		// Gather Methods
 		def methods = ["all:all"]
