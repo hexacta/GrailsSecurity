@@ -9,6 +9,7 @@ class AuthenticatedUser implements Serializable {
 	static final ERROR_INCORRECT_CREDENTIALS = 2
 	static final ERROR_LOGIN_NAME_NOT_AVAILABLE = 3
 	static final AWAITING_CONFIRMATION = 4
+	static final ALREADY_LOGGED = 5
 	
 	String login
     

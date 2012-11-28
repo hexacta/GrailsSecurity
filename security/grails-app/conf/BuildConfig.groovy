@@ -9,13 +9,16 @@ grails.project.dependency.resolution = {
         // excludes 'ehcache'
 		excludes ( "xml-apis" )
     }
-    log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    log "verbose" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
-        grailsCentral()
+		mavenRepo "http://maven.hexacta.com:8083/nexus/content/groups/public/"
+        //grailsCentral()
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         //mavenLocal()
         //mavenCentral()
+		
+		
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
@@ -29,6 +32,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+		runtime ":hibernate:$grailsVersion"
         build(":tomcat:$grailsVersion",
               ":release:2.0.3",
               ":rest-client-builder:1.0.2") {

@@ -2,7 +2,6 @@ package com.hexacta.enhanced.authentication
 
 import javax.servlet.RequestDispatcher;
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.springframework.context.ApplicationContext
 import org.springframework.beans.factory.InitializingBean
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
@@ -11,16 +10,16 @@ import org.springframework.context.ApplicationContextAware
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.RequestAttributes
 
-import com.hexacta.enhanced.authentication.AuthenticationService;
-import com.hexacta.enhanced.authentication.AuthenticationUser;
-import com.hexacta.enhanced.authentication.Component;
-import com.hexacta.enhanced.authentication.ControllerConfiguration;
-import com.hexacta.enhanced.authentication.Method;
-import com.hexacta.enhanced.authentication.Permission;
-import com.hexacta.enhanced.authentication.Role;
+import com.hexacta.enhanced.authentication.AuthenticationService
+import com.hexacta.enhanced.authentication.AuthenticationUser
+import com.hexacta.enhanced.authentication.Component
+import com.hexacta.enhanced.authentication.ControllerConfiguration
+import com.hexacta.enhanced.authentication.Method
+import com.hexacta.enhanced.authentication.Permission
+import com.hexacta.enhanced.authentication.Role
 
-import com.hexacta.enhanced.authentication.AuthenticatedUser;
-import com.hexacta.enhanced.authentication.annotations.Visible;
+import com.hexacta.enhanced.authentication.AuthenticatedUser
+import com.hexacta.enhanced.authentication.annotations.Visible
 
 class AuthenticationService {
 	
@@ -31,6 +30,8 @@ class AuthenticationService {
 	
 	static final SESSION_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
 	static final REQUEST_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
+	// In minutes
+	static final PASSWORD_RESET_DEFAULT_TIMEOUT = 30
 
 	static nonAuthenticatedActions = [[controller:'authentication', action:'*']] as Set
 	
@@ -41,6 +42,7 @@ class AuthenticationService {
 	def grailsApplication
 	
 	def bootstrap(){
+		clearSessionTokens()
 		createControllers()
 		fireEvent("BootstrapRoles", [grailsApplication: grailsApplication])
 		fireEvent("BootstrapUsers", [grailsApplication: grailsApplication])
@@ -68,6 +70,13 @@ class AuthenticationService {
 	def needsAuthentication(controllerName, actionName){
 		!nonAuthenticatedActions.find {
 			(it.controller == controllerName) && ((it.action == '*') || (it.action == actionName))
+		}
+	}
+	
+	def clearSessionTokens(){
+		AuthenticationUser.list().each {
+			it.sessionToken = null
+			it.save()
 		}
 	}
 	
@@ -144,7 +153,7 @@ class AuthenticationService {
      * can be captured and passed to the onSignup event.
      */
 	AuthenticatedUser signup(Map params) {
-        assert !ConfigurationHolder.config.authentication?.signup?.disabled, "Cannot perform signup, it is disabled in Config"
+        assert !grailsApplication.config.authentication?.signup?.disabled, "Cannot perform signup, it is disabled in Config"
         
 		def login = params.login
 		def password = params.password
@@ -219,10 +228,17 @@ class AuthenticationService {
 		if (!user) {
 			token.result = AuthenticatedUser.ERROR_NO_SUCH_LOGIN
             setSessionUser(null)		    
-		} else if (user.password != encodePassword(pass)) {
+		}
+		else if (user.password != encodePassword(pass)) {
 			token.result = AuthenticatedUser.ERROR_INCORRECT_CREDENTIALS
             setSessionUser(null)		    
-		} else {
+		}
+		else if( grailsApplication.config.enhanced.authentication.forbidMultipleSessions && user.sessionToken){
+			token.result = AuthenticatedUser.ALREADY_LOGGED
+			setSessionUser(null)
+		} 
+		else {
+			// Success
 			token.result = userStatusToResult(user.status)
 			token.userObjectId = user.id
 			token.attributes['userObjectId'] = user.id
@@ -231,7 +247,11 @@ class AuthenticationService {
 			token.attributes['firstName'] = user.firstName
 			token.attributes['lastName'] = user.lastName
 			token.attributes['email'] = user.email
-            setSessionUser(token)		    
+			def sessionToken = generateAuthenticationToken(user.login)
+			token.attributes['sessionToken'] = sessionToken
+            setSessionUser(token)
+			user.sessionToken = sessionToken
+			user.save()
 			doLoggedIn(token)
 		}
 		return token 
@@ -270,6 +290,9 @@ class AuthenticationService {
 		}
 		if(authenticatedUser){
 			authenticatedUser.loggedIn = false
+			def user = getUserPrincipal()
+			user.sessionToken = null
+			user.save(flush: true)
 		}
 		if (log.infoEnabled) {
 			log.info("Logged out user ${authenticatedUser.login}")
@@ -426,7 +449,7 @@ class AuthenticationService {
     void configChanged() {
         log.info "Authentication reloading settings from config"
         // Take events from config if found
-        def configObj = ConfigurationHolder.config
+        def configObj = grailsApplication.config
         if (configObj.authenticationEvents) {
             events = configObj.authenticationEvents 
             log.info "Authentication loaded custom events from Config"
@@ -539,7 +562,7 @@ class AuthenticationService {
             response.sendRedirect(loginURI) // Crappy but we can't use smart dynamic redirect
     	    return false // Indicate "don't carry on processing" as auth is required
         }
-
+		
         // do authorization events
         if (fireEvent("CheckAuthorized", [request: request, user: request.session.getAttribute(SESSION_KEY_AUTH_USER),
                 controllerName: request.getAttribute(GrailsApplicationAttributes.CONTROLLER_NAME_ATTRIBUTE), 
@@ -598,6 +621,24 @@ class AuthenticationService {
             return false
         } 
 	}
+	
+	protected generateAuthenticationToken(login){
+		encodePassword(login + new Date().time)
+	}
+	
 
+	def generatePasswordResetLink(user){
+		def token = generateAuthenticationToken(user.login)
+		user.passwordResetToken = token
+		int timeout = grailsApplication.config.enhanced?.authentication?.passwordResetTimeout ? grailsApplication.config.enhanced?.authentication?.passwordResetTimeout : PASSWORD_RESET_DEFAULT_TIMEOUT
+		int currentTime =  new Date().time
+		user.passwordResetTimeout = new Date(currentTime + (timeout * 60 * 1000))
+		user.save(flush: true)
+		"/authentication/resetPassword/${token}"
+	}
+	
+	def validatePasswordResetLink(token){
+		AuthenticationUser.findByPasswordResetTokenAndPasswordResetTimeoutLessThanEquals(token, new Date())
+	}
 }
 

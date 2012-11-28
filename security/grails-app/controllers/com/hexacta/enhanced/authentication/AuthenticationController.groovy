@@ -93,9 +93,35 @@ class AuthenticationController {
 	}
 
 	def logout = { 
-	    def urls = extractParams() 
+	    def urls = extractParams()
 		authenticationService.logout( authenticationService.sessionUser )
 		redirect(flash.authSuccessURL ? flash.authSuccessURL : urls.success)
+	}
+	
+	def resetPassword(){
+		def user = authenticationService.validatePasswordResetLink(params.id)
+		if(!user){
+			response.sendError(403)
+		}
+		[authenticationUserInstance: user]
+	}
+	
+	def changePassword(){
+		def user = AuthenticationUser.findByLogin(params.login)
+		if(user.password != authenticationService.encodePassword(params.oldPassword)){
+			flash.message = message(code: "authentication.invalidPassword")
+			render(view: "resetPassword", model: [authenticationUserInstance: user])
+			return
+		}
+		if(params.newPassword != params.newPasswordConfirmation){
+			flash.message = message(code: "authentication.passwordsDontMatch")
+			render(view: "resetPassword", model: [authenticationUserInstance: user])
+			return
+		}
+		user.password = authenticationService.encodePassword(params.newPassword)
+		user.save(flush: true)
+		flash.message = message(code: 'authentication.passwordUpdated')
+		render(view: "resetPassword", model: [authenticationUserInstance: user])
 	}
 	
 	def mainPage = {

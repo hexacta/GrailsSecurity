@@ -33,6 +33,11 @@ class AuthenticationUserController {
     def save() {
         def authenticationUserInstance = new AuthenticationUser(params)
 		authenticationUserInstance.status = AuthenticationService.STATUS_VALID
+		if(!authenticationService.checkPassword(authenticationUserInstance.password)){
+			authenticationUserInstance.errors.rejectValue("password", "authentication.invalidPassword")
+			render(view: "create", model: [authenticationUserInstance: authenticationUserInstance])
+			return
+		}
 		authenticationUserInstance.password = authenticationService.encodePassword(authenticationUserInstance.password)
         if (!authenticationUserInstance.save(flush: true)) {
             render(view: "create", model: [authenticationUserInstance: authenticationUserInstance])
@@ -70,6 +75,11 @@ class AuthenticationUserController {
 	@Visible(key="update")
     def update(Long id, Long version) {
         def authenticationUserInstance = AuthenticationUser.get(id)
+		if(authenticationUserInstance && !authenticationService.checkPassword(authenticationUserInstance.password)){
+			authenticationUserInstance.errors.rejectValue("password", "authentication.invalidPassword")
+			render(view: "create", model: [authenticationUserInstance: authenticationUserInstance])
+			return
+		}
         if (!authenticationUserInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'authenticationUser.label', default: 'AuthenticationUser'), id])
             redirect(action: "list")

@@ -10,6 +10,9 @@ class AuthenticationUser {
 	String email
 	int status = AuthenticationService.STATUS_NEW
 	Role role
+	String sessionToken
+	String passwordResetToken
+	Date passwordResetTimeout
 
 	static constraints = {
 		login(size:5..64, unique: true)
@@ -23,6 +26,9 @@ class AuthenticationUser {
 			AuthenticationService.STATUS_AWAITING_CONFIRMATION, 
 			AuthenticationService.STATUS_CONFIRMATION_LAPSED
 		])
+		sessionToken(nullable: true)
+		passwordResetToken(nullable: true)
+		passwordResetTimeout(nullable: true)
 	}
 	
 	@Override

@@ -1,6 +1,9 @@
 // configuration for plugin testing - will not be included in the plugin zip
 
 log4j = {
+	root {
+		info 'stdout'
+	}
     // Example of changing the log pattern for the default console
     // appender:
     //
@@ -22,3 +25,5 @@ log4j = {
 
     warn   'org.mortbay.log'
 }
+
+enhanced.authentication.forbidMultipleSessions = true
