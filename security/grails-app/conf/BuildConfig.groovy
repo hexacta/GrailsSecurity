@@ -32,6 +32,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+		compile ":codenarc:0.17"
 		runtime ":hibernate:$grailsVersion"
         build(":tomcat:$grailsVersion",
               ":release:2.0.3",

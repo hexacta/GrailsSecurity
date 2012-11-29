@@ -99,11 +99,16 @@ class AuthenticationController {
 	}
 	
 	def resetPassword(){
-		def user = authenticationService.validatePasswordResetLink(params.id)
-		if(!user){
-			response.sendError(403)
+		if(grailsApplication.config.enhanced?.authentication?.passwordResetRedirect){
+			redirect(grailsApplication.config.enhanced?.authentication?.passwordResetRedirect)
 		}
-		[authenticationUserInstance: user]
+		else {
+			def user = authenticationService.validatePasswordResetLink(params.id)
+			if(!user){
+				response.sendError(403)
+			}
+			[authenticationUserInstance: user]
+		}
 	}
 	
 	def changePassword(){

@@ -1,4 +1,4 @@
-<plugin name='enhanced-authentication' version='1.0' grailsVersion='2.1 &gt; *'>
+<plugin name='enhanced-authentication' version='2.0' grailsVersion='2.1 &gt; *'>
   <author>Hexacta</author>
   <authorEmail>hat@hexacta.com</authorEmail>
   <title>Enhanced Authentication Plugin</title>
@@ -7,10 +7,14 @@
   <documentation>http://grails.org/plugin/enhanced-authentication</documentation>
   <type>EnhancedAuthenticationGrailsPlugin</type>
   <resources>
+    <resource>BootStrap</resource>
+    <resource>RuleSet</resource>
     <resource>security.SecurityFilters</resource>
+    <resource>spring.resources</resource>
     <resource>com.hexacta.enhanced.authentication.AuthenticationController</resource>
     <resource>com.hexacta.enhanced.authentication.AuthenticationUserController</resource>
     <resource>com.hexacta.enhanced.authentication.RoleController</resource>
+    <resource>test.TestController</resource>
     <resource>com.hexacta.enhanced.authentication.AuthenticationUser</resource>
     <resource>com.hexacta.enhanced.authentication.Component</resource>
     <resource>com.hexacta.enhanced.authentication.ControllerConfiguration</resource>
@@ -18,20 +22,29 @@
     <resource>com.hexacta.enhanced.authentication.Permission</resource>
     <resource>com.hexacta.enhanced.authentication.Role</resource>
     <resource>com.hexacta.enhanced.authentication.AuthenticationService</resource>
+    <resource>com.hexacta.enhanced.authentication.SessionTokenService</resource>
     <resource>com.hexacta.enhanced.authentication.AuthenticationTagLib</resource>
   </resources>
   <repositories>
+    <repository name='http://maven.hexacta.com:8083/nexus/content/groups/public/' url='http://maven.hexacta.com:8083/nexus/content/groups/public/' />
     <repository name='grailsCentral' url='http://grails.org/plugins' />
     <repository name='http://repo.grails.org/grails/core' url='http://repo.grails.org/grails/core/' />
     <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
   </repositories>
   <dependencies>
     <compile>
-      <dependency group='xerces' name='xercesImpl' version='2.9.1' />
       <dependency group='net.sourceforge.nekohtml' name='nekohtml' version='1.9.15' />
+      <dependency group='xerces' name='xercesImpl' version='2.9.1' />
     </compile>
   </dependencies>
-  <plugins />
+  <plugins>
+    <compile>
+      <plugin group='org.grails.plugins' name='codenarc' version='0.17' />
+    </compile>
+    <runtime>
+      <plugin group='org.grails.plugins' name='hibernate' version='2.1.0' />
+    </runtime>
+  </plugins>
   <runtimePluginRequirements />
   <behavior />
 </plugin>
