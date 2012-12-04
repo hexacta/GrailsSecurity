@@ -1,7 +1,7 @@
 import grails.util.Environment
-import security.AuthenticationUser
-import security.Role
-import security.Permission
+import com.hexacta.enhanced.authentication.AuthenticationUser
+import com.hexacta.enhanced.authentication.Role
+import com.hexacta.enhanced.authentication.Permission
 
 class BootStrap {
 	def authenticationService

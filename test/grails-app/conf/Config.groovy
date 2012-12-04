@@ -89,3 +89,6 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 }
+
+enhanced.authentication.passwordResetTimeout = 5
+enhanced.authentication.forbidMultipleSessions = true

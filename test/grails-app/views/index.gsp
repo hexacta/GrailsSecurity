@@ -113,6 +113,7 @@
 			<security:id id="pci">
 				<span>Content only valid for PCI certified users</span>
 			</security:id>
+			<g:link controller="item" action="resetLink">Get password reset link for this user</g:link>
 		</div>
 	</body>
 </html>

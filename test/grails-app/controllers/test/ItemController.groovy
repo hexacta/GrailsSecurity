@@ -1,7 +1,7 @@
 package test
 
 import org.springframework.dao.DataIntegrityViolationException
-import security.annotations.Visible
+import com.hexacta.enhanced.authentication.annotations.Visible
 
 @Visible(key="item")
 class ItemController {
@@ -118,4 +118,10 @@ class ItemController {
             redirect(action: "show", id: id)
         }
     }
+	
+	def resetLink(){
+		def user = authenticationService.getUserPrincipal()
+		def url = request.scheme + '://' + request.serverName + ':'+ request.serverPort + request.contextPath + authenticationService.generatePasswordResetLink(user)
+		render url
+	}
 }
