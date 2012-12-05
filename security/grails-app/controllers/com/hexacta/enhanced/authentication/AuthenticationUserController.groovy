@@ -33,7 +33,7 @@ class AuthenticationUserController {
     def save() {
         def authenticationUserInstance = new AuthenticationUser(params)
 		authenticationUserInstance.status = AuthenticationService.STATUS_VALID
-		if(!authenticationService.checkPassword(authenticationUserInstance.password)){
+		if(!authenticationService.checkPassword(authenticationUserInstance)){
 			authenticationUserInstance.errors.rejectValue("password", "authentication.invalidPassword")
 			render(view: "create", model: [authenticationUserInstance: authenticationUserInstance])
 			return

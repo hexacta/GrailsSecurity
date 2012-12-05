@@ -397,7 +397,7 @@ class AuthenticationService {
 	    // Called to validate the user's chosen login name, i.e. is it too short or in use? Return true if valid
 	    onValidateLogin:{ loginID -> true },
     	// Called to validate the user's password, i.e. is it long enough/strong enough. Return true if valid
-    	onValidatePassword: { password -> true },
+    	onValidatePassword: { user -> true },
     	// Called to encode the user's password prior to saving it, i.e. return digested/XOR'd password
     	// Defaults to SHA1 hash, i.e. clear text in the database
     	onEncodePassword: { password -> password?.encodeAsSHA1() },
