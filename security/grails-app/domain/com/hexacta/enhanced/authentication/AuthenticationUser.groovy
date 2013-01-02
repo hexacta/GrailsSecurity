@@ -15,10 +15,10 @@ class AuthenticationUser {
 	Date passwordResetTimeout
 
 	static constraints = {
-		login(size:5..64, unique: true)
-		firstName(size:5..64)
-		lastName(size:5..64)
-		password(size:5..64, password: true)
+		login(size:1..100, unique: true)
+		firstName(size:1..100)
+		lastName(size:1..100)
+		password(size:1..100, password: true)
 		email(email:true, nullable: true, blank: false)
 		status(inList:[
 			AuthenticationService.STATUS_NEW, 
