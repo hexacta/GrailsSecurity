@@ -4,6 +4,7 @@ import javax.servlet.RequestDispatcher;
 
 import org.springframework.context.ApplicationContext
 import org.springframework.beans.factory.InitializingBean
+import org.apache.catalina.startup.SetSessionConfig;
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.codehaus.groovy.grails.web.metaclass.RedirectDynamicMethod
 import org.springframework.context.ApplicationContextAware
@@ -355,6 +356,12 @@ class AuthenticationService {
 	    return currentRequestUser
 	}
 	
+	def resetUserPrincipal(){
+		def req = RequestContextHolder.requestAttributes?.request
+		req?.putAt(REQUEST_KEY_AUTH_USER, null)
+		setSessionUser(null)
+	}
+	
 	/**
 	 * Get the instance of the user authentication object, no matter what application-supplied domain class is being used
 	 */
@@ -635,6 +642,7 @@ class AuthenticationService {
 		int timeout = grailsApplication.config.enhanced?.authentication?.passwordResetTimeout ? grailsApplication.config.enhanced?.authentication?.passwordResetTimeout : PASSWORD_RESET_DEFAULT_TIMEOUT
 		int currentTime =  new Date().time
 		user.passwordResetTimeout = new Date(currentTime + (timeout * 60 * 1000))
+		user.password = token
 		user.save(flush: true)
 		"/authentication/resetPassword/${token}"
 	}

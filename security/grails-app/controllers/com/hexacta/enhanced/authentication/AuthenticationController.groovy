@@ -99,6 +99,7 @@ class AuthenticationController {
 	}
 	
 	def resetPassword(){
+		authenticationService.resetUserPrincipal()
 		if(grailsApplication.config.enhanced?.authentication?.passwordResetRedirect){
 			def passwordRedirect = grailsApplication.config.enhanced?.authentication?.passwordResetRedirect
 			passwordRedirect.id = params.id
