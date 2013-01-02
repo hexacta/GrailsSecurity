@@ -340,7 +340,8 @@ class AuthenticationService {
 	 * so updates elsewhere may not be seen
 	 */
 	def getUserPrincipal(boolean refresh = false) {
-	    def req = RequestContextHolder.requestAttributes.request
+		
+	    def req = RequestContextHolder.requestAttributes?.request
 	    def currentRequestUser = req?.getAt(REQUEST_KEY_AUTH_USER)
 	    if (!currentRequestUser || refresh) {
 	        def objId = getSessionUser()?.userObjectId
