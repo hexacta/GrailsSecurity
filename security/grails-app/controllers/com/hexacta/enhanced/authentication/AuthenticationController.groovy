@@ -126,6 +126,12 @@ class AuthenticationController {
 			render(view: "resetPassword", model: [authenticationUserInstance: user])
 			return
 		}
+		def validationResult = authenticationService.checkPassword([user: user, newPassword: params.newPassword])
+		if(!validationResult?.valid){
+			flash.message = message(code: validationResult.messageKey, args: validationResult.parameters)
+			render(view: "resetPassword", model: [authenticationUserInstance: user])
+			return
+		}
 		user.password = authenticationService.encodePassword(params.newPassword)
 		user.save(flush: true)
 		flash.message = message(code: 'authentication.passwordUpdated')

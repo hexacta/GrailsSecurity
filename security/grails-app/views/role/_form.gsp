@@ -9,6 +9,13 @@
 	<g:textField name="name" required="" value="${roleInstance?.name}"/>
 </div>
 
+<div class="fieldcontain ${hasErrors(bean: role, field: 'allowDeletion', 'error')} ">
+	<label for="allowDeletion">
+		<g:message code="role.allowDeletion.label" default="Allow Deletion" />
+	</label>
+	<g:field type="checkbox" name="allowDeletion" value="${role?.allowDeletion}"/>
+</div>
+
 <div class="fieldcontain ${hasErrors(bean: roleInstance, field: 'roles', 'error')} ">
 	<label for="roles">
 		<g:message code="role.roles.label" default="Roles" />

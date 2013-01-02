@@ -155,6 +155,11 @@ class RoleController {
             redirect(action: "list")
             return
         }
+		if(!roleInstance.allowDeletion){
+			flash.message = message(code: 'authentication.deleteDisabled')
+			redirect(action: "list")
+			return
+		}
 
         try {
             roleInstance.delete(flush: true)

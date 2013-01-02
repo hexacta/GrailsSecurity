@@ -2,6 +2,8 @@ package com.hexacta.enhanced.authentication
 
 class Role {
 	String name
+	boolean allowDeletion = true
+	
 	static hasMany = [roles: Role, permissions: Permission, components: Component]
 	
     static constraints = {

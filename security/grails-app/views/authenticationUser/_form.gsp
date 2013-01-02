@@ -36,6 +36,13 @@
 	<g:field type="email" name="email" value="${authenticationUserInstance?.email}"/>
 </div>
 
+<div class="fieldcontain ${hasErrors(bean: authenticationUserInstance, field: 'allowDeletion', 'error')} ">
+	<label for="allowDeletion">
+		<g:message code="authenticationUser.allowDeletion.label" default="Allow Deletion" />
+	</label>
+	<g:field type="checkbox" name="allowDeletion" value="${authenticationUserInstance?.allowDeletion}"/>
+</div>
+
 <div class="fieldcontain ${hasErrors(bean: authenticationUserInstance, field: 'roles', 'error')} ">
 	<label for="roles">
 		<g:message code="authenticationUser.roles.label" default="Roles" />

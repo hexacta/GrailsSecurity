@@ -117,6 +117,11 @@ class AuthenticationUserController {
             redirect(action: "list")
             return
         }
+		if(!authenticationUserInstance.allowDeletion){
+			flash.message = message(code: 'authentication.deleteDisabled')
+			redirect(action: "list")
+			return
+		}
 
         try {
             authenticationUserInstance.delete(flush: true)

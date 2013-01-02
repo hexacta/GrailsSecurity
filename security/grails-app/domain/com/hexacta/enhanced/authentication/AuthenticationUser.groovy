@@ -13,6 +13,7 @@ class AuthenticationUser {
 	String sessionToken
 	String passwordResetToken
 	Date passwordResetTimeout
+	boolean allowDeletion = true
 
 	static constraints = {
 		login(size:1..100, unique: true)
