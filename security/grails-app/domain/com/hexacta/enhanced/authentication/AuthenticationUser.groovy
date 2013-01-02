@@ -24,7 +24,8 @@ class AuthenticationUser {
 			AuthenticationService.STATUS_NEW, 
 			AuthenticationService.STATUS_VALID, 
 			AuthenticationService.STATUS_AWAITING_CONFIRMATION, 
-			AuthenticationService.STATUS_CONFIRMATION_LAPSED
+			AuthenticationService.STATUS_CONFIRMATION_LAPSED,
+			AuthenticationService.STATUS_DEACTIVATED
 		])
 		sessionToken(nullable: true)
 		passwordResetToken(nullable: true)

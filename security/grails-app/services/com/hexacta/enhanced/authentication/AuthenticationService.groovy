@@ -27,6 +27,7 @@ class AuthenticationService {
 	static final STATUS_VALID = 1
 	static final STATUS_AWAITING_CONFIRMATION = 2
 	static final STATUS_CONFIRMATION_LAPSED = 3
+	static final STATUS_DEACTIVATED = 4
 	
 	static final SESSION_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
 	static final REQUEST_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
