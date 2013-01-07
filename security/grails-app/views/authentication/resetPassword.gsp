@@ -12,11 +12,6 @@
 			<g:form controller="authentication" action="changePassword">
 				<g:hiddenField name="login" value="${authenticationUserInstance.login}"/>
 				<div class="fieldcontain">
-					<label for="oldPassword"><g:message code="resetPassword.oldPassword" default="Current password" /></label>
-					<input name="oldPassword" value="" type="password"/>
-					<g:hasErrors bean="${flash.message}" field="oldPassword"><g:renderErrors bean="${flash.message}" field="oldPassword"/></g:hasErrors>
-				</div>
-				<div class="fieldcontain">
 					<label for="newPassword"><g:message code="resetPassword.newPassword" default="New password" /></label>
 					<input name="newPassword" value="" type="password"/>
 					<g:hasErrors bean="${flash.message}" field="newPassword"><g:renderErrors bean="${flash.message}" field="newPassword"/></g:hasErrors>

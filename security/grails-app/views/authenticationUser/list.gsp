@@ -27,6 +27,7 @@
 						<g:sortableColumn property="lastName" title="${message(code: 'authenticationUser.lastName.label', default: 'Last Name')}" />
 						<g:sortableColumn property="email" title="${message(code: 'authenticationUser.email.label', default: 'Email')}" />
 						<g:sortableColumn property="role" title="${message(code: 'authenticationUser.role.label', default: 'Role')}" />
+						<th><g:message code="authenticationUser.passwordReset.label" default="Password Reset"/></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -38,7 +39,7 @@
 						<td>${fieldValue(bean: authenticationUserInstance, field: "lastName")}</td>
 						<td>${fieldValue(bean: authenticationUserInstance, field: "email")}</td>
 						<td>${fieldValue(bean: authenticationUserInstance, field: "role")}</td>
-					
+						<td><g:link controller="authenticationUser" action="resetPassword" id="${authenticationUserInstance.id}"><g:message code="authenticationUser.passwordReset.label" default="Password Reset"/></g:link></td>
 					</tr>
 				</g:each>
 				</tbody>

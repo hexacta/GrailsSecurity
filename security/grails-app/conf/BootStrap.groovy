@@ -3,6 +3,7 @@ import grails.util.Environment;
 import com.hexacta.enhanced.authentication.Permission;
 import com.hexacta.enhanced.authentication.Role;
 import com.hexacta.enhanced.authentication.AuthenticationUser;
+import com.hexacta.enhanced.authentication.ValidationResult;
 
 class BootStrap {
 	def authenticationService

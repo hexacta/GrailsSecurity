@@ -58,7 +58,13 @@
 				<li class="fieldcontain">
 					<span id="roles-label" class="property-label"><g:message code="authenticationUser.role.label" default="Roles" /></span>
 					<span class="property-value" aria-labelledby="roles-label"><g:link controller="role" action="show" id="${authenticationUserInstance.role.id}">${authenticationUserInstance.role?.encodeAsHTML()}</g:link></span>
-					
+				</li>
+				</g:if>
+				
+				<g:if test="${passwordResetLink}">
+				<li class="fieldcontain">
+					<span id="passwordResetLink-label" class="property-label"><g:message code="authenticationUser.passwordResetLink.label" default="Password Reset Link" /></span>
+						<span class="property-value" aria-labelledby="passwordResetLink-label"><g:link url="${passwordResetLink}">${passwordResetLink}</g:link></span>
 				</li>
 				</g:if>
 			

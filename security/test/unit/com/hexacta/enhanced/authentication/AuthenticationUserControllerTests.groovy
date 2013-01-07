@@ -109,7 +109,7 @@ class AuthenticationUserControllerTests {
 
         // test invalid parameters in update
         params.id = authenticationUser.id
-        params["login"] = 'l'
+        params["login"] = null
 
         controller.update()
 

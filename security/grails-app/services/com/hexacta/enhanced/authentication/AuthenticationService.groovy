@@ -236,6 +236,7 @@ class AuthenticationService {
             setSessionUser(null)		    
 		}
 		else if( grailsApplication.config.enhanced.authentication.forbidMultipleSessions && user.sessionToken){
+			println user.sessionToken
 			token.result = AuthenticatedUser.ALREADY_LOGGED
 			setSessionUser(null)
 		} 

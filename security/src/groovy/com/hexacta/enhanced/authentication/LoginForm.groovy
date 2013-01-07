@@ -10,7 +10,7 @@ class LoginForm implements Serializable {
 	boolean rememberMe
 	
 	static constraints = {
-		login(size:5..40, nullable: false, blank:false)
-		password(size:5..40, password:true, nullable: false, blank:false)
+		login(size:1..100, nullable: false, blank:false)
+		password(size:1..100, password:true, nullable: false, blank:false)
 	}
 }

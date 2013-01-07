@@ -10,6 +10,8 @@ class AuthenticationController {
 	def defaultAction = "index"
 	
 	def authenticationService
+	
+	def sessionScopeProxy
 
     /**
      * Extract success_* and error_* into maps that can be passed to redirect(),
@@ -48,6 +50,7 @@ class AuthenticationController {
 			def loginResult = authenticationService.login( form.login, form.password)
 			if (loginResult.result == 0) {
 				flash.loginForm = form
+				sessionScopeProxy.init()
 				if (log.debugEnabled) log.debug("Login succeeded for [${form.login}]")
 				redirect(flash.authSuccessURL ? flash.authSuccessURL : urls.success)
 			} else {                  
@@ -116,11 +119,6 @@ class AuthenticationController {
 	
 	def changePassword(){
 		def user = AuthenticationUser.findByLogin(params.login)
-		if(user.password != authenticationService.encodePassword(params.oldPassword)){
-			flash.message = message(code: "authentication.invalidPassword")
-			render(view: "resetPassword", model: [authenticationUserInstance: user])
-			return
-		}
 		if(params.newPassword != params.newPasswordConfirmation){
 			flash.message = message(code: "authentication.passwordsDontMatch")
 			render(view: "resetPassword", model: [authenticationUserInstance: user])

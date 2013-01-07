@@ -33,8 +33,9 @@ class AuthenticationUserController {
     def save() {
         def authenticationUserInstance = new AuthenticationUser(params)
 		authenticationUserInstance.status = AuthenticationService.STATUS_VALID
-		if(!authenticationService.checkPassword(authenticationUserInstance)){
-			authenticationUserInstance.errors.rejectValue("password", "authentication.invalidPassword")
+		def validationResult = authenticationService.checkPassword([user: authenticationUserInstance, newPassword: authenticationUserInstance.password]) 
+		if(!validationResult.valid){
+			authenticationUserInstance.errors.rejectValue("password", message(code: validationResult.messageKey, args: validationResult.parameters))
 			render(view: "create", model: [authenticationUserInstance: authenticationUserInstance])
 			return
 		}
@@ -133,4 +134,17 @@ class AuthenticationUserController {
             redirect(action: "show", id: id)
         }
     }
+	
+	@Visible(key="resetPassword")
+	def resetPassword(Long id){
+		def authenticationUserInstance = AuthenticationUser.get(id)
+		if (!authenticationUserInstance) {
+			flash.message = message(code: 'default.not.found.message', args: [message(code: 'authenticationUser.label', default: 'AuthenticationUser'), id])
+			redirect(action: "list")
+			return
+		}
+		def link = authenticationService.generatePasswordResetLink(authenticationUserInstance)
+		def url = request.scheme + '://' + request.serverName + ':'+ request.serverPort + request.contextPath + link
+		render(view: "show", model: [authenticationUserInstance: authenticationUserInstance, passwordResetLink: url])
+	}
 }
