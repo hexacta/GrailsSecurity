@@ -2,7 +2,7 @@
 
 log4j = {
 	root {
-		debug 'stdout'
+		info 'stdout'
 	}
     // Example of changing the log pattern for the default console
     // appender:

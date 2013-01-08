@@ -41,5 +41,10 @@ class AuthenticatedUser implements Serializable {
 	/**
 	 * The result code for the outcome of the last login attempt
 	 */
-	int result
+	int result
+
+	@Override
+	public String toString() {
+		login
+	}
 }
