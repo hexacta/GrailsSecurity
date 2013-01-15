@@ -1,12 +1,16 @@
 class EnhancedAuthenticationGrailsPlugin {
     // the plugin version
-    def version = "2.0.1"
+    def version = "2.1.0"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.1 > *"
     // the other plugins this plugin depends on
     def dependsOn = [:]
     // resources that are excluded from plugin packaging
-    def pluginExcludes = []
+    def pluginExcludes = [
+		"grails-app/controllers/test/TestController.groovy",
+		"grails-app/views/test/test.gsp",
+		"grails-app/views/layouts/main.gsp"
+		]
 
     def title = "Enhanced Authentication Plugin" // Headline display name of the plugin
     def author = "Hexacta"
@@ -40,7 +44,16 @@ Security plugin based on the Authentication plugin
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
+		sessionTokenService(com.hexacta.enhanced.authentication.SessionTokenService) { bean ->
+			bean.scope = 'session'
+			authenticationService = ref("authenticationService")
+			bean.destroyMethod = 'destroy'
+		}
+		
+		sessionScopeProxy(org.springframework.aop.scope.ScopedProxyFactoryBean) {
+			targetBeanName = 'sessionTokenService'
+			proxyTargetClass = true
+		}
     }
 
     def doWithDynamicMethods = { ctx ->

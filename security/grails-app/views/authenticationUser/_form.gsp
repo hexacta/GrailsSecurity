@@ -40,7 +40,7 @@
 	<label for="allowDeletion">
 		<g:message code="authenticationUser.allowDeletion.label" default="Allow Deletion" />
 	</label>
-	<g:field type="checkbox" name="allowDeletion" value="${authenticationUserInstance?.allowDeletion}"/>
+	<g:checkBox name="allowDeletion" value="${authenticationUserInstance?.allowDeletion}"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: authenticationUserInstance, field: 'roles', 'error')} ">

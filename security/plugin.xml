@@ -1,4 +1,4 @@
-<plugin name='enhanced-authentication' version='2.0.1' grailsVersion='2.1 &gt; *'>
+<plugin name='enhanced-authentication' version='2.1.0' grailsVersion='2.1 &gt; *'>
   <author>Hexacta</author>
   <authorEmail>hat@hexacta.com</authorEmail>
   <title>Enhanced Authentication Plugin</title>
@@ -22,7 +22,6 @@
     <resource>com.hexacta.enhanced.authentication.Permission</resource>
     <resource>com.hexacta.enhanced.authentication.Role</resource>
     <resource>com.hexacta.enhanced.authentication.AuthenticationService</resource>
-    <resource>com.hexacta.enhanced.authentication.SessionTokenService</resource>
     <resource>com.hexacta.enhanced.authentication.AuthenticationTagLib</resource>
   </resources>
   <repositories>
@@ -33,8 +32,8 @@
   </repositories>
   <dependencies>
     <compile>
-      <dependency group='net.sourceforge.nekohtml' name='nekohtml' version='1.9.15' />
       <dependency group='xerces' name='xercesImpl' version='2.9.1' />
+      <dependency group='net.sourceforge.nekohtml' name='nekohtml' version='1.9.15' />
     </compile>
   </dependencies>
   <plugins>
