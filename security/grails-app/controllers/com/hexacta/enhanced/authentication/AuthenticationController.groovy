@@ -47,6 +47,7 @@ class AuthenticationController {
 	def login = { LoginForm form ->
 	    def urls = extractParams()
 		if (!form.hasErrors()) {
+			session.authenticationMessage = null 
 			def loginResult = authenticationService.login( form.login, form.password)
 			if (loginResult.result == 0) {
 				flash.loginForm = form
@@ -56,6 +57,7 @@ class AuthenticationController {
 			} else {                  
 				flash.loginForm = form
 				flash.authenticationFailure = loginResult
+				session.authenticationMessage= message(code: 'authentication.logIn.Failed')
 				if (log.debugEnabled) log.debug("Login failed for [${form.login}] - reason: ${loginResult.result}")
 				redirect(flash.authFailureURL ? flash.authFailureURL : urls.error)
 			}

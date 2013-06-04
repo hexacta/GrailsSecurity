@@ -27,13 +27,12 @@
   <repositories>
     <repository name='http://maven.hexacta.com:8083/nexus/content/groups/public/' url='http://maven.hexacta.com:8083/nexus/content/groups/public/' />
     <repository name='grailsCentral' url='http://grails.org/plugins' />
-    <repository name='http://repo.grails.org/grails/core' url='http://repo.grails.org/grails/core/' />
     <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
   </repositories>
   <dependencies>
     <compile>
-      <dependency group='xerces' name='xercesImpl' version='2.9.1' />
       <dependency group='net.sourceforge.nekohtml' name='nekohtml' version='1.9.15' />
+      <dependency group='xerces' name='xercesImpl' version='2.9.1' />
     </compile>
   </dependencies>
   <plugins>
@@ -41,7 +40,7 @@
       <plugin group='org.grails.plugins' name='codenarc' version='0.17' />
     </compile>
     <runtime>
-      <plugin group='org.grails.plugins' name='hibernate' version='2.1.0' />
+      <plugin group='org.grails.plugins' name='hibernate' version='2.2.2' />
     </runtime>
   </plugins>
   <runtimePluginRequirements />

@@ -27,3 +27,5 @@ log4j = {
 }
 
 enhanced.authentication.forbidMultipleSessions = true
+grails.views.default.codec="none" // none, html, base64
+grails.views.gsp.encoding="UTF-8"
