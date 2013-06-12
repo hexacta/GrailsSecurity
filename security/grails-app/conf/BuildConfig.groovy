@@ -1,7 +1,6 @@
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
-
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
@@ -28,11 +27,11 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 		compile 'net.sourceforge.nekohtml:nekohtml:1.9.15'
 		compile 'xerces:xercesImpl:2.9.1'
-        // runtime 'mysql:mysql-connector-java:5.1.18'
+        runtime 'mysql:mysql-connector-java:5.1.18'
     }
 
     plugins {
-		compile ":codenarc:0.17"
+		compile ":codenarc:0.18.1"
 		runtime ":hibernate:$grailsVersion"
         build(":tomcat:$grailsVersion",
               ":release:2.0.3",

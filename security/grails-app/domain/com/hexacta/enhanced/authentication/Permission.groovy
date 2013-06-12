@@ -10,6 +10,9 @@ class Permission {
 		controller(nullable: false)
 		method(nullable: false)
     }
+	static mapping = {
+		table AuthenticationUtils.DOMAIN_PREFFIX + 'PERMISSION'
+	}
 
 	String toString() {
 		return controller.toString() + SEPARATOR + method.toString()

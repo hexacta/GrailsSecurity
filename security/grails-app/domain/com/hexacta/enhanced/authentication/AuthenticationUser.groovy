@@ -33,6 +33,10 @@ class AuthenticationUser {
 		passwordResetTimeout(nullable: true)
 	}
 	
+	static mapping = {
+		table AuthenticationUtils.DOMAIN_PREFFIX + 'USER'
+	}
+	
 	@Override
 	public String toString() {
 		return firstName+" "+lastName;

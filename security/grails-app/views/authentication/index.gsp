@@ -29,7 +29,7 @@
 						<input name="password" value="" type="password"/>
 						<g:hasErrors bean="${flash.loginFormErrors}" field="password"><g:renderErrors bean="${flash.loginFormErrors}" as="list" field="password"/></g:hasErrors>
 					</div>
-					<g:actionSubmit value="Log in"/> 
+					<g:actionSubmit value="Log in" action="login"/> 
 				</security:form>
 			</security:ifNotLoggedIn>
 		</div>

@@ -12,7 +12,10 @@ class Role {
 		components(nullable: true)
 		permissions(nullable: true)
     }
-	
+	static mapping = {
+		table AuthenticationUtils.DOMAIN_PREFFIX + 'ROLE'
+	}
+
 	@Override
 	public String toString() {
 		return name;
