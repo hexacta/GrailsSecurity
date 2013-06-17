@@ -640,15 +640,16 @@ class AuthenticationService {
 		def token = generateAuthenticationToken(user.login)
 		user.passwordResetToken = token
 		int timeout = grailsApplication.config.enhanced?.authentication?.passwordResetTimeout ? grailsApplication.config.enhanced?.authentication?.passwordResetTimeout : PASSWORD_RESET_DEFAULT_TIMEOUT
-		int currentTime =  new Date().time
-		user.passwordResetTimeout = new Date(currentTime + (timeout * 60 * 1000))
+		Calendar currentTime =  Calendar.getInstance()
+		currentTime.add(Calendar.MINUTE, timeout)
+		user.passwordResetTimeout = currentTime.getTime()
 		user.password = token
 		user.save(flush: true)
 		"/authentication/resetPassword/${token}"
 	}
 	
 	def validatePasswordResetLink(token){
-		AuthenticationUser.findByPasswordResetTokenAndPasswordResetTimeoutLessThanEquals(token, new Date())
+		AuthenticationUser.findByPasswordResetTokenAndPasswordResetTimeoutGreaterThan(token, new Date())
 	}
 }
 
