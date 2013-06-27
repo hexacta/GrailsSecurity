@@ -1,4 +1,4 @@
-<plugin name='enhanced-authentication' version='2.2.0' grailsVersion='2.1 &gt; *'>
+<plugin name='enhanced-authentication' version='2.2.1' grailsVersion='2.1 &gt; *'>
   <author>Hexacta</author>
   <authorEmail>hat@hexacta.com</authorEmail>
   <title>Enhanced Authentication Plugin</title>
@@ -31,8 +31,8 @@
   </repositories>
   <dependencies>
     <compile>
-      <dependency group='xerces' name='xercesImpl' version='2.9.1' />
       <dependency group='net.sourceforge.nekohtml' name='nekohtml' version='1.9.15' />
+      <dependency group='xerces' name='xercesImpl' version='2.9.1' />
     </compile>
     <runtime>
       <dependency group='mysql' name='mysql-connector-java' version='5.1.18' />
