@@ -168,7 +168,7 @@ class AuthenticationService {
 		
 		def authUser = new AuthenticatedUser(login:login)
 		if (user) {
-			authUser.result = AuthenticatedUser.ERROR_LOGIN_NAME_NOT_AVAILABLE
+			authUser.result = AuthenticationResult.ERROR_LOGIN_NAME_NOT_AVAILABLE.id
 			return authUser
 		}
 		
@@ -200,7 +200,7 @@ class AuthenticationService {
 		// Convert the status to a result code
 		authUser.result = userStatusToResult(user.status)
 
-        if ((authUser.result == 0) || (authUser.result == AuthenticatedUser.AWAITING_CONFIRMATION)) {
+        if ((authUser.result == 0) || (authUser.result == AuthenticationResult.AWAITING_CONFIRMATION.id)) {
             setSessionUser(authUser)
         } else {
             setSessionUser(null)
@@ -226,15 +226,15 @@ class AuthenticationService {
 		def token = new AuthenticatedUser(login:login, loginTime:new Date()) 
 
 		if (!user) {
-			token.result = AuthenticatedUser.ERROR_NO_SUCH_LOGIN
+			token.result = AuthenticationResult.ERROR_NO_SUCH_LOGIN.id
             setSessionUser(null)		    
 		}
 		else if (user.password != encodePassword(pass)) {
-			token.result = AuthenticatedUser.ERROR_INCORRECT_CREDENTIALS
+			token.result = AuthenticationResult.ERROR_INCORRECT_CREDENTIALS.id
             setSessionUser(null)		    
 		}
 		else if( grailsApplication.config.enhanced.authentication.forbidMultipleSessions && user.sessionToken){
-			token.result = AuthenticatedUser.ALREADY_LOGGED
+			token.result = AuthenticationResult.ALREADY_LOGGED.id
 			setSessionUser(null)
 		} 
 		else {

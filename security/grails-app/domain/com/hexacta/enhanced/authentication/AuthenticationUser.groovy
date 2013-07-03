@@ -14,10 +14,10 @@ class AuthenticationUser {
 	boolean allowDeletion = true
 
 	static constraints = {
-		login(size:1..100, unique: true)
-		firstName(size:1..100)
-		lastName(size:1..100)
-		password(size:1..100, password: true)
+		login(nullable: false, blank: false, size:1..100, unique: true)
+		firstName(nullable: false, blank: false, size:1..100)
+		lastName(nullable: false, blank: false, size:1..100)
+		password(nullable: false, size:1..100, password: true)
 		email(email:true, nullable: true, blank: false)
 		status(inList:[
 			AuthenticationUserState.NEW.id, 
