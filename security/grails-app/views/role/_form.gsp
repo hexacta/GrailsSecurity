@@ -13,7 +13,7 @@
 	<label for="allowDeletion">
 		<g:message code="role.allowDeletion.label" default="Allow Deletion" />
 	</label>
-	<g:field type="checkbox" name="allowDeletion" value="${role?.allowDeletion}"/>
+	<g:field type="checkbox" name="allowDeletion" checked="${roleInstance?.allowDeletion}" />
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: roleInstance, field: 'roles', 'error')} ">

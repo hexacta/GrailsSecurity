@@ -2,10 +2,10 @@ package com.hexacta.enhanced.authentication
 
 import org.springframework.dao.DataIntegrityViolationException
 
-import com.hexacta.enhanced.authentication.AuthenticationService;
-import com.hexacta.enhanced.authentication.AuthenticationUser;
+import com.hexacta.enhanced.authentication.AuthenticationService
+import com.hexacta.enhanced.authentication.AuthenticationUser
 
-import com.hexacta.enhanced.authentication.annotations.Visible;
+import com.hexacta.enhanced.authentication.annotations.Visible
 
 @Visible(key="authenticationUser")
 class AuthenticationUserController {
@@ -32,7 +32,7 @@ class AuthenticationUserController {
 	@Visible(key="save")
     def save() {
         def authenticationUserInstance = new AuthenticationUser(params)
-		authenticationUserInstance.status = AuthenticationService.STATUS_VALID
+		authenticationUserInstance.status = AuthenticationUserState.VALID.id
 		def validationResult = authenticationService.checkPassword([user: authenticationUserInstance, newPassword: authenticationUserInstance.password]) 
 		if(!validationResult.valid){
 			authenticationUserInstance.errors.rejectValue("password", message(code: validationResult.messageKey, args: validationResult.parameters))
@@ -98,7 +98,7 @@ class AuthenticationUserController {
         }
 
         authenticationUserInstance.properties = params
-		authenticationUserInstance.status = AuthenticationService.STATUS_VALID
+		authenticationUserInstance.status = AuthenticationUserState.VALID.id
 		authenticationUserInstance.password = authenticationService.encodePassword(authenticationUserInstance.password)
 
         if (!authenticationUserInstance.save(flush: true)) {
@@ -136,8 +136,8 @@ class AuthenticationUserController {
     }
 	
 	@Visible(key="resetPassword")
-	def resetPassword(Long id){
-		def authenticationUserInstance = AuthenticationUser.get(id)
+	def resetPassword(){
+		def authenticationUserInstance = AuthenticationUser.get(params.id)
 		if (!authenticationUserInstance) {
 			flash.message = message(code: 'default.not.found.message', args: [message(code: 'authenticationUser.label', default: 'AuthenticationUser'), id])
 			redirect(action: "list")

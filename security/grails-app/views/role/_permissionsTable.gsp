@@ -5,7 +5,7 @@
 <g:if test="${flash.message}">
 	<div class="message" role="status">${flash.message}</div>
 </g:if>
-<table>
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<g:sortableColumn property="controller" title="${message(code: 'permission.controller.label', default: 'Controller')}" />

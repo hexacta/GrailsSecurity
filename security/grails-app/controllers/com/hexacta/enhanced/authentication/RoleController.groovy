@@ -42,6 +42,7 @@ class RoleController {
 
 	@Visible(key="save")
     def save() {
+		params.allowDeletion = params.allowDeletion != null
         def roleInstance = new Role(params)
 		if (!roleInstance.save(flush: true)) {
             render(view: "create", model: [roleInstance: roleInstance])
@@ -160,6 +161,13 @@ class RoleController {
 			redirect(action: "list")
 			return
 		}
+		def dependentRoles = Role.where{ roles { name == roleInstance.name}}.list() 
+		if(dependentRoles){
+			flash.message = message(code: 'role.cantDelete.inherited', args: dependentRoles.join(","))
+			redirect(action: "list")
+			return
+		}
+		
 
         try {
             roleInstance.delete(flush: true)

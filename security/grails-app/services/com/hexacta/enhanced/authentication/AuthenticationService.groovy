@@ -1,6 +1,6 @@
 package com.hexacta.enhanced.authentication
 
-import javax.servlet.RequestDispatcher;
+import javax.servlet.RequestDispatcher
 
 import org.springframework.context.ApplicationContext
 import org.springframework.beans.factory.InitializingBean
@@ -23,17 +23,10 @@ import com.hexacta.enhanced.authentication.AuthenticatedUser
 import com.hexacta.enhanced.authentication.annotations.Visible
 
 class AuthenticationService {
-	
-	static final STATUS_NEW = 0
-	static final STATUS_VALID = 1
-	static final STATUS_AWAITING_CONFIRMATION = 2
-	static final STATUS_CONFIRMATION_LAPSED = 3
-	static final STATUS_DEACTIVATED = 4
-	
-	static final SESSION_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
-	static final REQUEST_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
+	protected static final SESSION_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
+	protected static final REQUEST_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
 	// In minutes
-	static final PASSWORD_RESET_DEFAULT_TIMEOUT = 30
+	protected static final PASSWORD_RESET_DEFAULT_TIMEOUT = 30
 
 	static nonAuthenticatedActions = [[controller:'authentication', action:'*']] as Set
 	
@@ -84,8 +77,7 @@ class AuthenticationService {
 	
 	def createControllers(){
 		// Create Controllers
-		def all = new ControllerConfiguration(name: Permission.ALL, label: "all")
-		all.save()
+		def all = ControllerConfiguration.findByName(Permission.ALL)
 		def controllers = grailsApplication.getArtefacts("Controller")
 		controllers = controllers.findAll { it.getClazz().isAnnotationPresent(Visible)}
 		controllers.each {
@@ -104,14 +96,20 @@ class AuthenticationService {
 		// Create Methods
 		methods.each {
 			def tokens = it.tokenize(":")
-			new Method(name: tokens.get(0), label: tokens.get(1)).save()
+			def method = Method.findByNameAndLabel(tokens.get(0), tokens.get(1))
+			if(!method){
+				new Method(name: tokens.get(0), label: tokens.get(1)).save()
+			}
 		}
 		// Associate Methods
-		["all": "all", "list": "list", "create": "create", "show": "show", "edit": "edit", "save": "save", "update": "update", "delete": "delete"].each { key, value ->
-			def method = Method.findByNameAndLabel(key, value)
-			all.addToMethods(method)
+		if(!all){
+			all = new ControllerConfiguration(name: Permission.ALL, label: "all")
+			["all": "all", "list": "list", "create": "create", "show": "show", "edit": "edit", "save": "save", "update": "update", "delete": "delete"].each { key, value ->
+				def method = Method.findByNameAndLabel(key, value)
+				all.addToMethods(method)
+			}
+			all.save()
 		}
-		all.save()
 		controllers.each {
 			def controller = ControllerConfiguration.findByName(it.getLogicalPropertyName())
 			controller.addToMethods(Method.findByNameAndLabel(Permission.ALL, "all"))
@@ -178,13 +176,13 @@ class AuthenticationService {
 		user.login = login
 		user.password = encodePassword(password)
 		user.email = email
-		user.status = STATUS_AWAITING_CONFIRMATION
+		user.status = AuthenticationUserState.AWAITING_CONFIRMATION.id
 
 		// See if confirmation required, onConfirmAccount will return true if so
 		if (!params.suppressConfirmation && fireEvent('ConfirmAccount', user)) {
 			logInImmediately = false // these are mutually exclusive settings
 		} else {
-			user.status = STATUS_VALID
+			user.status = AuthenticationUserState.VALID.id
 		}
 		
 		if (!fireEvent('SaveUser', user)) {
@@ -262,13 +260,13 @@ class AuthenticationService {
 	protected userStatusToResult(def userStatus) {
 		def value
 		switch (userStatus) {
-			case STATUS_NEW : 
-			case STATUS_VALID :
+			case AuthenticationUserState.NEW.id : 
+			case AuthenticationUserState.VALID.id :
 				value = 0
 				break
-			case STATUS_AWAITING_CONFIRMATION :
-			case STATUS_CONFIRMATION_LAPSED :
-				value = AuthenticatedUser.AWAITING_CONFIRMATION
+			case AuthenticationUserState.AWAITING_CONFIRMATION.id :
+			case AuthenticationUserState.CONFIRMATION_LAPSED.id :
+				value = AuthenticationUserState.AWAITING_CONFIRMATION.id
 				break
 			default :
 				throw new IllegalArgumentException("Unrecognized value $userStatus passed to userStatusToResult")
@@ -313,7 +311,7 @@ class AuthenticationService {
 		if (!user) {
 			return false
 		} else {
-			user.status = STATUS_VALID
+			user.status = AuthenticationUserState.VALID.id
 			if (!fireEvent('SaveUser', user)){
 				throw new RuntimeException("Unable to save confirmed user $user")
 			}
@@ -344,15 +342,13 @@ class AuthenticationService {
 	def getUserPrincipal(boolean refresh = false) {
 		
 	    def req = RequestContextHolder.requestAttributes?.request
-	    def currentRequestUser = req?.getAt(REQUEST_KEY_AUTH_USER)
-	    if (!currentRequestUser || refresh) {
-	        def objId = getSessionUser()?.userObjectId
-	        if (objId) {
-	            currentRequestUser = getUserDomainObjectById(objId)
-            } else return null
+	    def loggedUserId = req?.getAt(REQUEST_KEY_AUTH_USER)
+	    if (!loggedUserId || refresh) {
+	        loggedUserId = getSessionUser()?.userObjectId
+			// Cache it for lifetime of this request
+			req?.putAt(REQUEST_KEY_AUTH_USER, loggedUserId)
         }
-        // Cache it for lifetime of this request
-	    req?.putAt(REQUEST_KEY_AUTH_USER, currentRequestUser)
+		def currentRequestUser = getUserDomainObjectById(loggedUserId)
 	    return currentRequestUser
 	}
 	

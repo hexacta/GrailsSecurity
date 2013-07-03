@@ -1,4 +1,4 @@
-<plugin name='enhanced-authentication' version='2.2.1' grailsVersion='2.1 &gt; *'>
+<plugin name='enhanced-authentication' version='2.3.1' grailsVersion='2.1 &gt; *'>
   <author>Hexacta</author>
   <authorEmail>hat@hexacta.com</authorEmail>
   <title>Enhanced Authentication Plugin</title>
@@ -27,6 +27,7 @@
   <repositories>
     <repository name='http://maven.hexacta.com:8083/nexus/content/groups/public/' url='http://maven.hexacta.com:8083/nexus/content/groups/public/' />
     <repository name='grailsCentral' url='http://grails.org/plugins' />
+    <repository name='http://repo.grails.org/grails/core' url='http://repo.grails.org/grails/core/' />
     <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
   </repositories>
   <dependencies>
@@ -43,7 +44,7 @@
       <plugin group='org.grails.plugins' name='codenarc' version='0.18.1' />
     </compile>
     <runtime>
-      <plugin group='org.grails.plugins' name='hibernate' version='2.2.2' />
+      <plugin group='org.grails.plugins' name='hibernate' version='2.1.0' />
     </runtime>
   </plugins>
   <runtimePluginRequirements />

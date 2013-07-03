@@ -114,6 +114,7 @@ class AuthenticationController {
 			def user = authenticationService.validatePasswordResetLink(params.id)
 			if(!user){
 				def expiredLinkRedirect = grailsApplication.config.enhanced?.authentication?.expiredLinkRedirect
+				log.info("Password reset link expired, redirecting to ${expiredLinkRedirect}")
 				if(expiredLinkRedirect){
 					redirect(expiredLinkRedirect)
 				}

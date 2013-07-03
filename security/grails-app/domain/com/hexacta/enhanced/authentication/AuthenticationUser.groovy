@@ -1,14 +1,12 @@
 package com.hexacta.enhanced.authentication
 
-import com.hexacta.enhanced.authentication.AuthenticationService;
-
 class AuthenticationUser { 
 	String login
 	String firstName
 	String lastName
 	String password
 	String email
-	int status = AuthenticationService.STATUS_NEW
+	int status = AuthenticationUserState.NEW.id
 	Role role
 	String sessionToken
 	String passwordResetToken
@@ -22,11 +20,11 @@ class AuthenticationUser {
 		password(size:1..100, password: true)
 		email(email:true, nullable: true, blank: false)
 		status(inList:[
-			AuthenticationService.STATUS_NEW, 
-			AuthenticationService.STATUS_VALID, 
-			AuthenticationService.STATUS_AWAITING_CONFIRMATION, 
-			AuthenticationService.STATUS_CONFIRMATION_LAPSED,
-			AuthenticationService.STATUS_DEACTIVATED
+			AuthenticationUserState.NEW.id, 
+			AuthenticationUserState.VALID.id, 
+			AuthenticationUserState.AWAITING_CONFIRMATION.id, 
+			AuthenticationUserState.CONFIRMATION_LAPSED.id,
+			AuthenticationUserState.DEACTIVATED.id
 		])
 		sessionToken(nullable: true)
 		passwordResetToken(nullable: true)

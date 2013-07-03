@@ -7,7 +7,7 @@ class ControllerConfiguration {
 	static hasMany = [methods: Method]
 	
     static constraints = {
-		name(nullable: false, blank: false)
+		name(nullable: false, blank: false, unique: true)
 		label(nullable:false, blank: false)
     }
 	static mapping = {
