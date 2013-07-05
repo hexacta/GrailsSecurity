@@ -25,7 +25,7 @@ class AuthenticatedUser implements Serializable {
 	/**
 	 * The domain object id of the user principal object for this account
 	 */
-	def userObjectId
+	Long userObjectId
 	
 	/**
 	 * Any application-specific attributes you wish to store for this session can go here

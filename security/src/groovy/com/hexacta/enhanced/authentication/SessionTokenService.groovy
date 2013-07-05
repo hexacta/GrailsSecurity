@@ -3,11 +3,12 @@ package com.hexacta.enhanced.authentication
 import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Transactional;
 
-class SessionTokenService {
-	private Logger LOGGER = Logger.getLogger(SessionTokenService.class)
+class SessionTokenService implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private transient Logger LOGGER = Logger.getLogger(SessionTokenService.class)
 	
-	def authenticationService
-	def userLogin
+	def transient authenticationService
+	String userLogin
 	
 	@Transactional
 	void destroy(){
