@@ -18,7 +18,7 @@ class AuthenticationUser {
 		firstName(nullable: false, blank: false, size:1..100)
 		lastName(nullable: false, blank: false, size:1..100)
 		password(nullable: false, size:1..100, password: true)
-		email(email:true, nullable: true, blank: false)
+		email(email:true, nullable: false, blank: false)
 		status(inList:[
 			AuthenticationUserState.NEW.id, 
 			AuthenticationUserState.VALID.id, 

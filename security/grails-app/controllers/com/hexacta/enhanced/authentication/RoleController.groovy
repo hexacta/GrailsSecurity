@@ -136,14 +136,14 @@ class RoleController {
                 return
             }
         }
-
+		roleInstance.permissions = null
+		roleInstance.components = null
         roleInstance.properties = params
-
+		
 		if (!roleInstance.save(flush: true)) {
             render(view: "edit", model: [roleInstance: roleInstance])
             return
         }
-		session.permissionList = null
         flash.message = message(code: 'default.updated.message', args: [message(code: 'role.label', default: 'Role'), roleInstance.id])
         redirect(action: "show", id: roleInstance.id)
     }
@@ -163,7 +163,7 @@ class RoleController {
 		}
 		def dependentRoles = Role.where{ roles { name == roleInstance.name}}.list() 
 		if(dependentRoles){
-			flash.message = message(code: 'role.cantDelete.inherited', args: dependentRoles.join(","))
+			flash.message = message(code: 'role.cantDelete.inherited', args: [dependentRoles.join(",")])
 			redirect(action: "list")
 			return
 		}

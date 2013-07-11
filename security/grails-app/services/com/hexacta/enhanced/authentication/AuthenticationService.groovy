@@ -8,6 +8,7 @@ import org.apache.catalina.startup.SetSessionConfig;
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.codehaus.groovy.grails.web.metaclass.RedirectDynamicMethod
 import org.springframework.context.ApplicationContextAware
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.RequestAttributes
 
@@ -30,19 +31,16 @@ class AuthenticationService {
 
 	static nonAuthenticatedActions = [[controller:'authentication', action:'*']] as Set
 	
-    // We set this to true even though we don't directly use GORM
-    // The event handlers are likely to require a transaction
-	boolean transactional = true
 	
 	def grailsApplication
-	
+	@Transactional
 	def bootstrap(){
 		clearSessionTokens()
 		createControllers()
 		fireEvent("BootstrapRoles", [grailsApplication: grailsApplication])
 		fireEvent("BootstrapUsers", [grailsApplication: grailsApplication])
 	}
-	
+	@Transactional
 	def getPermission(conName, methodName){
 		def controller = ControllerConfiguration.findByName(conName)
 		def method = controller.methods.find { it.name == methodName}
@@ -55,26 +53,26 @@ class AuthenticationService {
 		}
 		return permission
 	}
-	
+	@Transactional(readOnly = true)
 	def registerComponent(componentId) {
 		if(!Component.findByName(componentId)){
 			new Component(name: componentId).save()
 		}
 	}
-	
+	@Transactional(readOnly = true)
 	def needsAuthentication(controllerName, actionName){
 		!nonAuthenticatedActions.find {
 			(it.controller == controllerName) && ((it.action == '*') || (it.action == actionName))
 		}
 	}
-	
+	@Transactional
 	def clearSessionTokens(){
 		AuthenticationUser.list().each {
 			it.sessionToken = null
 			it.save()
 		}
 	}
-	
+	@Transactional
 	def createControllers(){
 		// Create Controllers
 		def all = ControllerConfiguration.findByName(Permission.ALL)
@@ -119,7 +117,7 @@ class AuthenticationService {
 			}
 		}
 	}
-	
+	@Transactional
 	def createController(conName, conKey, methods){
 		def controller = new ControllerConfiguration(name: conName, label: conKey)
 		methods.sort { it.key }.entrySet().each { 
@@ -152,6 +150,7 @@ class AuthenticationService {
      * typically the request params from the controller so that any custom fields from the signup process
      * can be captured and passed to the onSignup event.
      */
+	@Transactional
 	AuthenticatedUser signup(Map params) {
         assert !grailsApplication.config.authentication?.signup?.disabled, "Cannot perform signup, it is disabled in Config"
         
@@ -215,11 +214,11 @@ class AuthenticationService {
 
 		return authUser
 	}
-
+	@Transactional(readOnly = true)
 	boolean exists(login) {
 		return fireEvent('FindByLogin', login)
 	}
-
+	@Transactional
 	AuthenticatedUser login(login, pass) {
 		def user = fireEvent('FindByLogin', login)
 		
@@ -283,7 +282,7 @@ class AuthenticationService {
 		// Fire event
 		fireEvent('LoggedIn', user)
 	}
-	
+	@Transactional
 	void logout(AuthenticatedUser authenticatedUser) {
 		if (log.debugEnabled) {
 			log.debug("Logging out with authenticated user object ${authenticatedUser}")
@@ -305,6 +304,7 @@ class AuthenticationService {
 	 *
 	 * @return true if user was found and confirmed, false if user not found
 	 */
+	@Transactional
 	boolean confirmUser(login) {
 		def user = fireEvent('FindByLogin', login)
 	
@@ -327,7 +327,7 @@ class AuthenticationService {
 	        attribs.request.session.setAttribute(SESSION_KEY_AUTH_USER, user)		
         }
 	}
-	
+
 	AuthenticatedUser getSessionUser() {
 	    def attribs = RequestContextHolder.requestAttributes
 	    if (attribs) {
@@ -339,6 +339,7 @@ class AuthenticationService {
 	 * Get the user domain object for the current logged in user. Caches it for the lifetime of the request
 	 * so updates elsewhere may not be seen
 	 */
+	@Transactional(readOnly = true)
 	def getUserPrincipal(boolean refresh = false) {
 		
 	    def req = RequestContextHolder.requestAttributes?.request
@@ -361,10 +362,11 @@ class AuthenticationService {
 	/**
 	 * Get the instance of the user authentication object, no matter what application-supplied domain class is being used
 	 */
+	@Transactional(readOnly = true)
 	def getUserDomainObjectById(id) {
 	    userDomainClass.get(id)
 	}
-	
+	@Transactional
 	boolean delete(login) {
 		def user = fireEvent('FindByLogin', login)
 		
@@ -472,11 +474,11 @@ class AuthenticationService {
 	// as they cannot then refer to an injected prefs service
 	// The need to be static here to enable them to be used in domain class and command object
 	// validators
-	
+	@Transactional(readOnly = true)
 	def checkLogin(def value) {
 		return fireEvent("ValidateLogin", value)
 	}
-	
+	@Transactional(readOnly = true)
 	def checkPassword(def value) {
 		return fireEvent("ValidatePassword", value)
 	}
@@ -497,12 +499,12 @@ class AuthenticationService {
 	    def user = request.session.getAttribute(SESSION_KEY_AUTH_USER)
 		return (user?.result == 0) && user?.loggedIn
 	}
-	
+	@Transactional(readOnly = true)
 	boolean hasRoles(roles) {
 		def closure = {role, value -> role.name.equals(value)}
 		return hasAccess(roles, closure)
 	}
-	
+	@Transactional(readOnly = true)
 	boolean hasPermissions(permissions) {
 		def closure = {role, value -> role.permissions.find { it.validatePermission(value) } }
 		return hasAccess(permissions, closure)
@@ -522,7 +524,7 @@ class AuthenticationService {
 		}
 		return false
 	}
-	
+	@Transactional(readOnly = true)
 	boolean hasId(ids){
 		if(!Component.findAllByName(ids)){
 			log.warn("Id ${ids} not registered")
@@ -532,7 +534,7 @@ class AuthenticationService {
 		def result= hasAccess(ids, closure)
 		return result
 	}
-	
+	@Transactional(readOnly = true)
 	boolean hasAccess(values, closure){
 		def user = getSessionUser()
 		def valid = false
@@ -561,6 +563,7 @@ class AuthenticationService {
 	 * loginURI must be URI relative to this server (must include application context) and will be 
 	 * redirected to if the user is not logged in
 	 */
+	@Transactional(readOnly = true)
 	boolean filterRequest( request, response, loginURI) {
         if (!isLoggedIn(request)) {
     	    if (log.debugEnabled) log.debug("Filtering request - user not logged in, redirecting to ${loginURI}")
@@ -604,6 +607,7 @@ class AuthenticationService {
 	 * loginURI must be URI relative to this server (must include application context) and will be 
 	 * redirected to if the user is not logged in
 	 */
+	@Transactional(readOnly = true)
 	boolean requireAuthorization(requirement, loginURI) {
 	    def request = RequestContextHolder.requestAttributes.request
 	    def response = RequestContextHolder.requestAttributes.currentResponse
@@ -613,7 +617,7 @@ class AuthenticationService {
     	    return false // Indicate "don't carry on processing" as auth is required
         }
 
-        // do authorisation events
+        // do authorisation events 
         if (fireEvent("HasAuthorization", [requirement:requirement, request: request, user: request.session.getAttribute(SESSION_KEY_AUTH_USER),
                 controllerName: request.getAttribute(GrailsApplicationAttributes.CONTROLLER_NAME_ATTRIBUTE), 
                 actionName: request.getAttribute(GrailsApplicationAttributes.ACTION_NAME_ATTRIBUTE) ] )) {
@@ -631,7 +635,7 @@ class AuthenticationService {
 		encodePassword(login + new Date().time)
 	}
 	
-
+	@Transactional
 	def generatePasswordResetLink(user){
 		def token = generateAuthenticationToken(user.login)
 		user.passwordResetToken = token
@@ -643,7 +647,7 @@ class AuthenticationService {
 		user.save(flush: true)
 		"/authentication/resetPassword/${token}"
 	}
-	
+	@Transactional(readOnly = true)
 	def validatePasswordResetLink(token){
 		AuthenticationUser.findByPasswordResetTokenAndPasswordResetTimeoutGreaterThan(token, new Date())
 	}
