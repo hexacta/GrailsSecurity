@@ -24,8 +24,6 @@ import com.hexacta.enhanced.authentication.AuthenticatedUser
 import com.hexacta.enhanced.authentication.annotations.Visible
 
 class AuthenticationService {
-	protected static final SESSION_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
-	protected static final REQUEST_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
 	// In minutes
 	protected static final PASSWORD_RESET_DEFAULT_TIMEOUT = 30
 
@@ -323,23 +321,11 @@ class AuthenticationService {
 	}
 
 	def setSessionUser(AuthenticatedUser user) {
-	    def attribs = RequestContextHolder.requestAttributes
-	    if (attribs) {
-	        attribs.request.session.setAttribute(SESSION_KEY_AUTH_USER, user)		
-        }
-		else{
-			authenticatedUser.set(user)
-		}
+		authenticatedUser.set(user)
 	}
 
 	AuthenticatedUser getSessionUser() {
-	    def attribs = RequestContextHolder.requestAttributes
-	    if (attribs) {
-	        return attribs.request.session.getAttribute(SESSION_KEY_AUTH_USER)		
-        }
-		else{
-			return authenticatedUser.get()
-		}
+		return authenticatedUser.get()
 	}
 	
 	/** 
@@ -348,21 +334,12 @@ class AuthenticationService {
 	 */
 	@Transactional(readOnly = true)
 	def getUserPrincipal(boolean refresh = false) {
-		
-	    def req = RequestContextHolder.requestAttributes?.request
-	    def loggedUserId = req?.getAt(REQUEST_KEY_AUTH_USER)
-	    if (!loggedUserId || refresh) {
-	        loggedUserId = getSessionUser()?.userObjectId
-			// Cache it for lifetime of this request
-			req?.putAt(REQUEST_KEY_AUTH_USER, loggedUserId)
-        }
+	    def loggedUserId = getSessionUser()?.userObjectId
 		def currentRequestUser = getUserDomainObjectById(loggedUserId)
 	    return currentRequestUser
 	}
 	
 	def resetUserPrincipal(){
-		def req = RequestContextHolder.requestAttributes?.request
-		req?.putAt(REQUEST_KEY_AUTH_USER, null)
 		setSessionUser(null)
 	}
 	
