@@ -31,6 +31,7 @@ class AuthenticationService {
 
 	static nonAuthenticatedActions = [[controller:'authentication', action:'*']] as Set
 	
+	private static final ThreadLocal<AuthenticatedUser> authenticatedUser = new ThreadLocal<AuthenticatedUser>()
 	
 	def grailsApplication
 	@Transactional
@@ -321,11 +322,14 @@ class AuthenticationService {
 		}
 	}
 
-	protected void setSessionUser(AuthenticatedUser user) {
+	def setSessionUser(AuthenticatedUser user) {
 	    def attribs = RequestContextHolder.requestAttributes
 	    if (attribs) {
 	        attribs.request.session.setAttribute(SESSION_KEY_AUTH_USER, user)		
         }
+		else{
+			authenticatedUser.set(user)
+		}
 	}
 
 	AuthenticatedUser getSessionUser() {
@@ -333,6 +337,9 @@ class AuthenticationService {
 	    if (attribs) {
 	        return attribs.request.session.getAttribute(SESSION_KEY_AUTH_USER)		
         }
+		else{
+			return authenticatedUser.get()
+		}
 	}
 	
 	/** 
@@ -496,7 +503,7 @@ class AuthenticationService {
 	
 	// Called to check it the current request has a successfully logged in user
 	boolean isLoggedIn(request) {
-	    def user = request.session.getAttribute(SESSION_KEY_AUTH_USER)
+	    def user = getSessionUser()
 		return (user?.result == 0) && user?.loggedIn
 	}
 	@Transactional(readOnly = true)
@@ -572,13 +579,13 @@ class AuthenticationService {
         }
 		
         // do authorization events
-        if (fireEvent("CheckAuthorized", [request: request, user: request.session.getAttribute(SESSION_KEY_AUTH_USER),
+        if (fireEvent("CheckAuthorized", [request: request, user: getSessionUser(),
                 controllerName: request.getAttribute(GrailsApplicationAttributes.CONTROLLER_NAME_ATTRIBUTE), 
                 actionName: request.getAttribute(GrailsApplicationAttributes.ACTION_NAME_ATTRIBUTE) ] )) {
-    	    if (log.debugEnabled) log.debug("Filtering request - user ${request.session.getAttribute(SESSION_KEY_AUTH_USER)} authorized access")
+    	    if (log.debugEnabled) log.debug("Filtering request - user ${getSessionUser()} authorized access")
             return true
         } else {
-    	    if (log.debugEnabled) log.debug("Filtering request - user ${request.session.getAttribute(SESSION_KEY_AUTH_USER)} denied access")
+    	    if (log.debugEnabled) log.debug("Filtering request - user ${getSessionUser()} denied access")
             // Let the app know, for logging etc
             fireEvent("UnauthorizedAccess", [request:request, response:response])
             return false
@@ -618,13 +625,13 @@ class AuthenticationService {
         }
 
         // do authorisation events 
-        if (fireEvent("HasAuthorization", [requirement:requirement, request: request, user: request.session.getAttribute(SESSION_KEY_AUTH_USER),
+        if (fireEvent("HasAuthorization", [requirement:requirement, request: request, user: getSessionUser(),
                 controllerName: request.getAttribute(GrailsApplicationAttributes.CONTROLLER_NAME_ATTRIBUTE), 
                 actionName: request.getAttribute(GrailsApplicationAttributes.ACTION_NAME_ATTRIBUTE) ] )) {
-    	    if (log.debugEnabled) log.debug("Authorizing request - user ${request.session.getAttribute(SESSION_KEY_AUTH_USER)} authorized access")
+    	    if (log.debugEnabled) log.debug("Authorizing request - user ${getSessionUser()} authorized access")
             return true
         } else {
-    	    if (log.debugEnabled) log.debug("Authorizing request - user ${request.session.getAttribute(SESSION_KEY_AUTH_USER)} denied access")
+    	    if (log.debugEnabled) log.debug("Authorizing request - user ${getSessionUser()} denied access")
             // Let the app know, for logging etc
             fireEvent("UnauthorizedAccess", [request:request, response:response])
             return false
