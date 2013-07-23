@@ -54,20 +54,20 @@ class AuthenticationTagLib {
 	}
 
 	def ifUnconfirmed = { attrs, body -> 
-		if (session[AuthenticationService.SESSION_KEY_AUTH_USER]?.result == AuthenticatedUser.AWAITING_CONFIRMATION) {
+		if (authenticationService.getSessionUser()?.result == AuthenticatedUser.AWAITING_CONFIRMATION) {
 			out << body()
 		}
 	}
 
 	def ifNotLoggedIn = { attrs, body -> 
-		if (!session[AuthenticationService.SESSION_KEY_AUTH_USER] || !checkLoggedIn()) {
+		if (!authenticationService.getSessionUser() || !checkLoggedIn()) {
 			out << body()
 		}
 	}
 	
 	def user = { attrs -> 
 		if (checkLoggedIn()) {
-		    def u = session[AuthenticationService.SESSION_KEY_AUTH_USER]
+		    def u = authenticationService.getSessionUser()
 		    if (u) {
 		        def codec = attrs.codec != null ? (attrs.codec ?: 'HTML') : null
 		        def v = u.attributes[attrs.property ? attrs.property : 'login'] 
