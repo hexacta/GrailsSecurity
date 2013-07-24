@@ -1,5 +1,5 @@
 package com.hexacta.enhanced.authentication
 
 class AuthenticationUtils {
-	static String DOMAIN_PREFFIX = "AUTHENTICATION_"
+	static String DOMAIN_PREFFIX = "AUTH_"
 }

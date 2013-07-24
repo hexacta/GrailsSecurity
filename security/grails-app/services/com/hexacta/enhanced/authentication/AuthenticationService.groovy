@@ -28,6 +28,8 @@ class AuthenticationService {
 	protected static final REQUEST_KEY_AUTH_USER = 'grails-authentication.authenticatedUser'
 	// In minutes
 	protected static final PASSWORD_RESET_DEFAULT_TIMEOUT = 30
+	
+	private static ThreadLocal<AuthenticatedUser> processUser = new ThreadLocal<AuthenticatedUser>()
 
 	static nonAuthenticatedActions = [[controller:'authentication', action:'*']] as Set
 	
@@ -333,6 +335,13 @@ class AuthenticationService {
 	    if (attribs) {
 	        return attribs.request.session.getAttribute(SESSION_KEY_AUTH_USER)		
         }
+		else{
+			return processUser.get();
+		}
+	}
+	
+	def void setProcessUser(AuthenticationUser user){
+		processUser.set(new AuthenticatedUser(userObjectId: user.id));
 	}
 	
 	/** 
