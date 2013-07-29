@@ -1,6 +1,7 @@
 <%@ page import="com.hexacta.enhanced.authentication.Role" %>
 <%@ page import="com.hexacta.enhanced.authentication.Component" %>
 <%@ page import="com.hexacta.enhanced.authentication.ControllerConfiguration" %>
+<%@ page import="com.hexacta.enhanced.authentication.AuthenticationUtils" %>
 <div class="fieldcontain ${hasErrors(bean: roleInstance, field: 'name', 'error')} required">
 	<label for="name">
 		<g:message code="role.name.label" default="Name" />
@@ -27,8 +28,8 @@
 	<label for="permissionController">
 		<g:message code="permission.label" default="Permission" />
 	</label>
-	<g:select name="permissionController" from="${ControllerConfiguration.list().sort { it.id }}"  optionKey="name" valueMessagePrefix="controller" onchange="${remoteFunction(action:'updateMethods', params: '\'selectedController=\' + this.value', update: [success:'methodSelect', failure: 'methodSelect'])}"/>
-	<div id="methodSelect" class="inline-div"><g:select name="permissionMethod" from="${ControllerConfiguration.get(1).methods.sort { it.id }}" optionKey="name" valueMessagePrefix="method"/></div>
+	<g:select name="permissionController" from="${ControllerConfiguration.list().sort { it.id }}"  optionKey="name" optionValue="label" valueMessagePrefix="${AuthenticationUtils.I18N_PREFFIX}controller" onchange="${remoteFunction(action:'updateMethods', params: '\'selectedController=\' + this.value', update: [success:'methodSelect', failure: 'methodSelect'])}"/>
+	<div id="methodSelect" class="inline-div"><g:select name="permissionMethod" from="${ControllerConfiguration.get(1).methods.sort { it.id }}" optionKey="name" optionValue="label" valueMessagePrefix="${AuthenticationUtils.I18N_PREFFIX}method"/></div>
 	<g:submitToRemote action="addPermission" update="permissionsTable" value="${message(code: 'default.button.addPermission', default: 'Add Permission')}"/>
 	<div id="permissionsTable">
 		<g:render template="permissionsTable"/>	

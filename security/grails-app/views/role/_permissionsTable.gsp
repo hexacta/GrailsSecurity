@@ -1,4 +1,5 @@
 <%@ page import="com.hexacta.enhanced.authentication.Role" %>
+<%@ page import="com.hexacta.enhanced.authentication.AuthenticationUtils" %>
 <g:each in="${roleInstance?.permissions?.sort {it.id} }" var="permission" status="i">
 	<g:hiddenField name="permissions" value="${permission.id}" />
 </g:each>
@@ -16,8 +17,8 @@
 	<tbody>
 	<g:each in="${roleInstance.permissions?.sort { it.id }}" status="i" var="permissionInstance">
 		<tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-			<td>${message(code: 'controller.'+permissionInstance.controller.label)}</td>
-			<td>${message(code: 'method.'+permissionInstance.method.label)}</td>
+			<td>${message(code: AuthenticationUtils.I18N_PREFFIX + 'controller.' + permissionInstance.controller.label)}</td>
+			<td>${message(code: AuthenticationUtils.I18N_PREFFIX + 'method.' + permissionInstance.method.label)}</td>
 			<td><g:submitToRemote action="removePermission" id="${permissionInstance?.id}" update="permissionsTable" value="${message(code:'default.button.delete.label', default: 'Delete')}"/></td>
 		</tr>
 	</g:each>

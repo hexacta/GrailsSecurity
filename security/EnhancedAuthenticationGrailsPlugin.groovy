@@ -1,6 +1,6 @@
 class EnhancedAuthenticationGrailsPlugin {
     // the plugin version
-    def version = "2.3.7"
+    def version = "2.3.8"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.1 > *"
     // the other plugins this plugin depends on
@@ -10,7 +10,9 @@ class EnhancedAuthenticationGrailsPlugin {
 		"grails-app/controllers/test/TestController.groovy",
 		"grails-app/views/test/test.gsp",
 		"grails-app/views/layouts/main.gsp",
-		"grails-app/conf/RuleSet.groovy"
+		"grails-app/conf/RuleSet.groovy",
+		"grails-app/i18n/messages.properties",
+		"grails-app/i18n/messages_es.properties"
 		]
 
     def title = "Enhanced Authentication Plugin" // Headline display name of the plugin

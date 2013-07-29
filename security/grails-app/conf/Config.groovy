@@ -28,5 +28,6 @@ log4j = {
 
 enhanced.authentication.passwordResetTimeout = 3
 enhanced.authentication.forbidMultipleSessions = true
+enhanced.authentication.disable.bootstrap.controllers = true
 grails.views.default.codec="none" // none, html, base64
 grails.views.gsp.encoding="UTF-8"

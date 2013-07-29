@@ -38,7 +38,9 @@ class AuthenticationService {
 	@Transactional
 	def bootstrap(){
 		clearSessionTokens()
-		createControllers()
+		if(!grailsApplication.config?.enhanced?.authentication?.disable?.bootstrap?.controllers){
+			createControllers()
+		}
 		fireEvent("BootstrapRoles", [grailsApplication: grailsApplication])
 		fireEvent("BootstrapUsers", [grailsApplication: grailsApplication])
 	}
@@ -83,7 +85,7 @@ class AuthenticationService {
 		controllers.each {
 			def conName= it.getLogicalPropertyName()
 			if(!ControllerConfiguration.findByName(conName)){
-				def conKey = it.getClazz().getAnnotation(Visible).key()
+				def conKey = AuthenticationUtils.I18N_PREFFIX + it.getClazz().getAnnotation(Visible).key()
 				new ControllerConfiguration(name: conName, label: conKey).save()
 			}
 		}
@@ -98,23 +100,23 @@ class AuthenticationService {
 			def tokens = it.tokenize(":")
 			def method = Method.findByNameAndLabel(tokens.get(0), tokens.get(1))
 			if(!method){
-				new Method(name: tokens.get(0), label: tokens.get(1)).save()
+				new Method(name: tokens.get(0), label: AuthenticationUtils.I18N_PREFFIX + tokens.get(1)).save()
 			}
 		}
 		// Associate Methods
 		if(!all){
 			all = new ControllerConfiguration(name: Permission.ALL, label: "all")
 			["all": "all", "list": "list", "create": "create", "show": "show", "edit": "edit", "save": "save", "update": "update", "delete": "delete"].each { key, value ->
-				def method = Method.findByNameAndLabel(key, value)
+				def method = Method.findByNameAndLabel(key, AuthenticationUtils.I18N_PREFFIX + value)
 				all.addToMethods(method)
 			}
 			all.save()
 		}
 		controllers.each {
 			def controller = ControllerConfiguration.findByName(it.getLogicalPropertyName())
-			controller.addToMethods(Method.findByNameAndLabel(Permission.ALL, "all"))
+			controller.addToMethods(Method.findByNameAndLabel(Permission.ALL, AuthenticationUtils.I18N_PREFFIX + "all"))
 			it.getClazz().getMethods().findAll { it.isAnnotationPresent(Visible) }.each {
-				def method = Method.findByNameAndLabel(it.name, it.getAnnotation(Visible).key())
+				def method = Method.findByNameAndLabel(it.name, AuthenticationUtils.I18N_PREFFIX + it.getAnnotation(Visible).key())
 				controller.addToMethods(method).save()
 			}
 		}
@@ -549,6 +551,7 @@ class AuthenticationService {
 		def valid = false
 		if ((user?.result == 0) && user?.loggedIn){
 			for(value in values.tokenize(',')) {
+				value = value.trim()
 				def loggedUserRole=user.attributes.role
 				Role userRole=Role.findByName(loggedUserRole)
 				valid = closure(userRole, value)
