@@ -105,10 +105,12 @@ class AuthenticationService {
 		}
 		// Associate Methods
 		if(!all){
-			all = new ControllerConfiguration(name: Permission.ALL, label: "all")
+			all = new ControllerConfiguration(name: Permission.ALL, label: AuthenticationUtils.I18N_PREFFIX + "all")
 			["all": "all", "list": "list", "create": "create", "show": "show", "edit": "edit", "save": "save", "update": "update", "delete": "delete"].each { key, value ->
 				def method = Method.findByNameAndLabel(key, AuthenticationUtils.I18N_PREFFIX + value)
-				all.addToMethods(method)
+				if(method){
+					all.addToMethods(method)
+				}
 			}
 			all.save()
 		}
@@ -117,7 +119,9 @@ class AuthenticationService {
 			controller.addToMethods(Method.findByNameAndLabel(Permission.ALL, AuthenticationUtils.I18N_PREFFIX + "all"))
 			it.getClazz().getMethods().findAll { it.isAnnotationPresent(Visible) }.each {
 				def method = Method.findByNameAndLabel(it.name, AuthenticationUtils.I18N_PREFFIX + it.getAnnotation(Visible).key())
-				controller.addToMethods(method).save()
+				if(method){
+					controller.addToMethods(method).save()
+				}
 			}
 		}
 	}
