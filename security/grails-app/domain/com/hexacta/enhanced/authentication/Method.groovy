@@ -16,6 +16,12 @@ class Method {
 
 	@Override
 	public String toString() {
-		return label;
+		def locale = LocaleContextHolder?.getLocale()
+		if(locale){
+			return grailsApplication?.getMainContext()?.getMessage(label, null, label, locale);
+		}
+		else{
+			return label
+		}
 	}
 }

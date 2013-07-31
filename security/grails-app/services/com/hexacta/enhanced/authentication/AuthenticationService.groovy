@@ -116,7 +116,10 @@ class AuthenticationService {
 		}
 		controllers.each {
 			def controller = ControllerConfiguration.findByName(it.getLogicalPropertyName())
-			controller.addToMethods(Method.findByNameAndLabel(Permission.ALL, AuthenticationUtils.I18N_PREFFIX + "all"))
+			def allMethod = Method.findByNameAndLabel(Permission.ALL, AuthenticationUtils.I18N_PREFFIX + "all")
+			if(allMethod){
+				controller.addToMethods(allMethod)
+			}
 			it.getClazz().getMethods().findAll { it.isAnnotationPresent(Visible) }.each {
 				def method = Method.findByNameAndLabel(it.name, AuthenticationUtils.I18N_PREFFIX + it.getAnnotation(Visible).key())
 				if(method){
@@ -131,7 +134,9 @@ class AuthenticationService {
 		methods.sort { it.key }.entrySet().each { 
 			def method = new Method (name: it.key, label: it.value)
 			method.save()
-			controller.addToMethods(method)
+			if(method){
+				controller.addToMethods(method)
+			}
 		}
 		//controller.save()
 	}
