@@ -1,7 +1,7 @@
 package com.hexacta.enhanced.authentication
 
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.context.i18n.LocaleContextHolder
+import org.springframework.web.context.request.RequestContextHolder
 
 class ControllerConfiguration {
 	def grailsApplication
@@ -9,6 +9,7 @@ class ControllerConfiguration {
 	String label
 	static belongsTo = Permission
 	static hasMany = [methods: Method]
+	static transients = ['grailsApplication']
 	
     static constraints = {
 		name(nullable: false, blank: false, unique: true)
