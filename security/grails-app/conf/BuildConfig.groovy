@@ -27,18 +27,19 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 		compile 'net.sourceforge.nekohtml:nekohtml:1.9.15'
 		compile 'xerces:xercesImpl:2.9.1'
-		runtime 'mysql:mysql-connector-java:5.1.18'
+		//runtime 'mysql:mysql-connector-java:5.1.18'
     }
 
     plugins {
-		runtime ":jquery:1.7.2"
-		compile ":jquery-ui:1.8.24"
-		runtime ":resources:1.1.6"
-		runtime ":hibernate:$grailsVersion"
+		//runtime ":jquery:1.7.2"
+		//compile ":jquery-ui:1.8.24"
+		//runtime ":resources:1.1.6"
+		//runtime ":hibernate:$grailsVersion"
         build(":tomcat:$grailsVersion",
               ":release:2.0.3",
               ":rest-client-builder:1.0.2") {
             export = false
         }
+		compile ':spring-security-core:1.2.7.3'
     }
 }

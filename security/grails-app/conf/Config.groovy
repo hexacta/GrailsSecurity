@@ -31,3 +31,8 @@ enhanced.authentication.forbidMultipleSessions = true
 enhanced.authentication.disable.bootstrap.controllers = false
 grails.views.default.codec="none" // none, html, base64
 grails.views.gsp.encoding="UTF-8"
+/*
+grails.plugins.springsecurity.secureChannel.definition = [
+	'/**':         'REQUIRES_SECURE_CHANNEL'
+  ]
+*/

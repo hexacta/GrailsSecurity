@@ -1,12 +1,10 @@
 package com.hexacta.enhanced.authentication
 
 class ControllerConfiguration {
-	def grailsApplication
 	String name
 	String label
 	static belongsTo = Permission
 	static hasMany = [methods: Method]
-	static transients = ['grailsApplication']
 	
     static constraints = {
 		name(nullable: false, blank: false, unique: true)
