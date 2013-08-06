@@ -415,7 +415,7 @@ class AuthenticationService {
     	// Defaults to SHA1 hash, i.e. clear text in the database
     	onEncodePassword: { password -> password?.encodeAsSHA1() },
     	// Called to load the user object by login id, must retun the user object or null if not found
-        onFindByLogin:{ loginID -> AuthenticationService.userDomainClass.findByLogin(loginID) },
+        onFindByLogin:{ loginID -> AuthenticationService.userDomainClass.findByLoginAndStatus(loginID, AuthenticationUserState.VALID.id) },
         // Called when a new user object is required, object returned must have login, password, email and status properties
         onNewUserObject: { loginID -> def obj = AuthenticationService.userDomainClass.newInstance(); obj.login = loginID; return obj },
         // Called when a user object has been changed and needs to be saved
@@ -656,7 +656,7 @@ class AuthenticationService {
 	}
 	@Transactional(readOnly = true)
 	def validatePasswordResetLink(token){
-		AuthenticationUser.findByPasswordResetTokenAndPasswordResetTimeoutGreaterThan(token, new Date())
+		AuthenticationUser.findByPasswordResetTokenAndStatusAndPasswordResetTimeoutGreaterThan(token, AuthenticationUserState.VALID.id, new Date())
 	}
 }
 
