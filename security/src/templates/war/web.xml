@@ -16,7 +16,7 @@
         <param-name>webAppRootKey</param-name>
         <param-value>@grails.project.key@</param-value>
     </context-param>
-    
+
     <filter>
         <filter-name>sitemesh</filter-name>
         <filter-class>org.codehaus.groovy.grails.web.sitemesh.GrailsPageFilter</filter-class>
@@ -70,7 +70,8 @@
     </servlet-mapping>
 
     <session-config>
-		<session-timeout>1</session-timeout>
+        <!-- 30 minutes -->
+        <session-timeout>30</session-timeout>
     </session-config>
 
     <welcome-file-list>

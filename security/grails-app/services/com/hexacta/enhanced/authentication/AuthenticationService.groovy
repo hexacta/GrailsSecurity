@@ -85,12 +85,12 @@ class AuthenticationService {
 		controllers.each {
 			def conName= it.getLogicalPropertyName()
 			if(!ControllerConfiguration.findByName(conName)){
-				def conKey = AuthenticationUtils.I18N_PREFFIX + it.getClazz().getAnnotation(Visible).key()
+				def conKey =  it.getClazz().getAnnotation(Visible).key()
 				new ControllerConfiguration(name: conName, label: conKey).save()
 			}
 		}
 		// Gather Methods
-		def methods = ["all:all"]
+		def methods = [Permission.ALL+":"+Permission.ALL]
 		controllers.each {
 			methods.addAll(it.getClazz().getMethods().findAll { it.isAnnotationPresent(Visible) }.collect { it.name + ":" + it.getAnnotation(Visible).key()})
 		}
@@ -100,47 +100,28 @@ class AuthenticationService {
 			def tokens = it.tokenize(":")
 			def method = Method.findByNameAndLabel(tokens.get(0), tokens.get(1))
 			if(!method){
-				new Method(name: tokens.get(0), label: AuthenticationUtils.I18N_PREFFIX + tokens.get(1)).save()
+				new Method(name: tokens.get(0), label:  tokens.get(1)).save()
 			}
 		}
 		// Associate Methods
 		if(!all){
-			all = new ControllerConfiguration(name: Permission.ALL, label: AuthenticationUtils.I18N_PREFFIX + "all")
-			["all": "all", "list": "list", "create": "create", "show": "show", "edit": "edit", "save": "save", "update": "update", "delete": "delete"].each { key, value ->
-				def method = Method.findByNameAndLabel(key, AuthenticationUtils.I18N_PREFFIX + value)
-				if(method){
-					all.addToMethods(method)
-				}
+			all = new ControllerConfiguration(name: Permission.ALL, label:  Permission.ALL)
+			[Permission.ALL, "list", "create", "show", "edit", "save", "update", "delete"].each {
+				def method = Method.findByNameAndLabel(it, it)
+				all.addToMethods(method)
 			}
 			all.save()
 		}
 		controllers.each {
 			def controller = ControllerConfiguration.findByName(it.getLogicalPropertyName())
-			def allMethod = Method.findByNameAndLabel(Permission.ALL, AuthenticationUtils.I18N_PREFFIX + "all")
-			if(allMethod){
-				controller.addToMethods(allMethod)
-			}
+			def allMethod = Method.findByNameAndLabel(Permission.ALL,  Permission.ALL)
+			controller.addToMethods(allMethod)
 			it.getClazz().getMethods().findAll { it.isAnnotationPresent(Visible) }.each {
-				def method = Method.findByNameAndLabel(it.name, AuthenticationUtils.I18N_PREFFIX + it.getAnnotation(Visible).key())
-				if(method){
-					controller.addToMethods(method).save()
-				}
+				def method = Method.findByNameAndLabel(it.name,  it.getAnnotation(Visible).key())
+				controller.addToMethods(method).save()
 			}
 		}
 	}
-	@Transactional
-	def createController(conName, conKey, methods){
-		def controller = new ControllerConfiguration(name: conName, label: conKey)
-		methods.sort { it.key }.entrySet().each { 
-			def method = new Method (name: it.key, label: it.value)
-			method.save()
-			if(method){
-				controller.addToMethods(method)
-			}
-		}
-		//controller.save()
-	}
-	
 
     /**
      * <p>Create a new user account, with domain and email notification etc deferred to the 
@@ -251,22 +232,27 @@ class AuthenticationService {
 		} 
 		else {
 			// Success
-			token.result = userStatusToResult(user.status)
-			token.userObjectId = user.id
-			token.attributes['userObjectId'] = user.id
-			token.attributes['login'] = user.login
-			token.attributes['role'] = user.role.name
-			token.attributes['firstName'] = user.firstName
-			token.attributes['lastName'] = user.lastName
-			token.attributes['email'] = user.email
-			def sessionToken = generateAuthenticationToken(user.login)
-			token.attributes['sessionToken'] = sessionToken
-            setSessionUser(token)
-			user.sessionToken = sessionToken
-			user.save()
-			doLoggedIn(token)
+			updateSessionUser(user)
 		}
 		return token 
+	}
+	
+	def updateSessionUser(user){
+		def token = new AuthenticatedUser(login: user.login, loginTime: new Date()) 
+		token.result = userStatusToResult(user.status)
+		token.userObjectId = user.id
+		token.attributes['userObjectId'] = user.id
+		token.attributes['login'] = user.login
+		token.attributes['role'] = user.role.name
+		token.attributes['firstName'] = user.firstName
+		token.attributes['lastName'] = user.lastName
+		token.attributes['email'] = user.email
+		def sessionToken = generateAuthenticationToken(user.login)
+		token.attributes['sessionToken'] = sessionToken
+		setSessionUser(token)
+		user.sessionToken = sessionToken
+		user.save()
+		doLoggedIn(token)
 	}
 	
 	protected userStatusToResult(def userStatus) {

@@ -69,7 +69,7 @@ class AuthenticationUserController {
             redirect(action: "list")
             return
         }
-
+		authenticationUserInstance.password = null
         [authenticationUserInstance: authenticationUserInstance]
     }
 
@@ -97,15 +97,24 @@ class AuthenticationUserController {
             }
         }
 
-        authenticationUserInstance.properties = params
+        authenticationUserInstance.login = params.login
+		authenticationUserInstance.firstName = params.firstName
+		authenticationUserInstance.lastName = params.lastName
+		authenticationUserInstance.email = params.email
 		authenticationUserInstance.status = AuthenticationUserState.VALID.id
-		authenticationUserInstance.password = authenticationService.encodePassword(authenticationUserInstance.password)
+		if(params.password){
+			authenticationUserInstance.password = authenticationService.encodePassword(params.password)
+		}
 
         if (!authenticationUserInstance.save(flush: true)) {
             render(view: "edit", model: [authenticationUserInstance: authenticationUserInstance])
             return
         }
-
+		// Re login the user if it's modifying himself 
+		if(authenticationService.getUserPrincipal().id == authenticationUserInstance.id){
+			log.info("relogin")
+			authenticationService.updateSessionUser(authenticationUserInstance)
+		}
         flash.message = message(code: 'default.updated.message', args: [message(code: 'authenticationUser.label', default: 'AuthenticationUser'), authenticationUserInstance.id])
         redirect(action: "show", id: authenticationUserInstance.id)
     }

@@ -1,8 +1,5 @@
 package com.hexacta.enhanced.authentication
 
-import org.springframework.context.i18n.LocaleContextHolder
-import org.springframework.web.context.request.RequestContextHolder
-
 class ControllerConfiguration {
 	def grailsApplication
 	String name
@@ -20,12 +17,6 @@ class ControllerConfiguration {
 	}
 	@Override
 	public String toString() {
-		def locale = LocaleContextHolder?.getLocale()
-		if(locale){
-			return grailsApplication?.getMainContext()?.getMessage(label, null, label, locale);
-		}
-		else{
-			return label
-		}
+		return label
 	}
 }
