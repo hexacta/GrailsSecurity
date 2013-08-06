@@ -13,11 +13,13 @@ hibernate {
 environments {
     development {
 		dataSource {
+			/*
 			url = "jdbc:mysql://localhost/qapplicationdb"
 			driverClassName = "com.mysql.jdbc.Driver"
 			dialect = org.hibernate.dialect.MySQL5InnoDBDialect
 			username = "root"
 			password = "root"
+			*/
 			dbCreate = "create"
 		}
     }

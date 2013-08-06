@@ -105,24 +105,32 @@ class AuthenticationController {
 	
 	def resetPassword(){
 		authenticationService.resetUserPrincipal()
-		if(grailsApplication.config.enhanced?.authentication?.passwordResetRedirect){
-			def passwordRedirect = grailsApplication.config.enhanced?.authentication?.passwordResetRedirect
-			passwordRedirect.id = params.id
-			redirect(passwordRedirect)
-		}
-		else {
-			def user = authenticationService.validatePasswordResetLink(params.id)
-			if(!user){
-				def expiredLinkRedirect = grailsApplication.config.enhanced?.authentication?.expiredLinkRedirect
-				log.info("Password reset link expired, redirecting to ${expiredLinkRedirect}")
-				if(expiredLinkRedirect){
-					redirect(expiredLinkRedirect)
-				}
-				else{
-					response.sendError(403)
-				}
+		def user = authenticationService.validatePasswordResetLink(params.id)
+		if(!user){
+			// Invalid link
+			def expiredLinkRedirect = grailsApplication.config.enhanced?.authentication?.expiredLinkRedirect
+			log.info("Password reset link expired, redirecting to ${expiredLinkRedirect}")
+			if(expiredLinkRedirect){
+				// Custom redirect
+				redirect(expiredLinkRedirect)
 			}
-			[authenticationUserInstance: user]
+			else{
+				// Default redirect
+				response.sendError(403)
+			}
+		}
+		else{
+			// Valid link
+			def passwordRedirect = grailsApplication.config.enhanced?.authentication?.passwordResetRedirect
+			if(passwordRedirect){
+				//Custom password reset page
+				passwordRedirect.id = params.id
+				redirect(passwordRedirect)
+			}
+			else{
+				// Default password reset page
+				[authenticationUserInstance: user]
+			}
 		}
 	}
 	
