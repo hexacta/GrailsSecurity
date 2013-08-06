@@ -148,6 +148,8 @@ class AuthenticationController {
 			return
 		}
 		user.password = authenticationService.encodePassword(params.newPassword)
+		user.passwordResetToken = null
+		user.passwordResetTimeout = null
 		user.save(flush: true)
 		flash.message = message(code: 'authentication.passwordUpdated')
 		render(view: "resetPassword", model: [authenticationUserInstance: user])
