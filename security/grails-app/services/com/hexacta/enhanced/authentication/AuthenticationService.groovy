@@ -656,7 +656,7 @@ class AuthenticationService {
 	}
 	@Transactional(readOnly = true)
 	def validatePasswordResetLink(token){
-		AuthenticationUser.findByPasswordResetTokenAndStatusAndPasswordResetTimeoutGreaterThan(token, AuthenticationUserState.VALID.id, new Date())
+		AuthenticationUser.findByPasswordResetTokenAndStatusNotEqualAndPasswordResetTimeoutGreaterThan(token, AuthenticationUserState.DEACTIVATED.id, new Date())
 	}
 }
 
