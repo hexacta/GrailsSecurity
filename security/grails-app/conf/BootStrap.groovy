@@ -17,6 +17,7 @@ class BootStrap {
 	
 	
 	def registerAuthenticationBootstrap() {
+		//authenticationService.tokenAuthenticatedActions << [controller: 'wsTest', action: '*']
 		authenticationService.events.onBootstrapRoles = { params ->
 			def admin = getRole('Admin')
 			admin.addToPermissions(authenticationService.getPermission(Permission.ALL, Permission.ALL)).save()
@@ -26,7 +27,7 @@ class BootStrap {
 			if(!admin){
 				admin = new AuthenticationUser(login: 'admin', firstName: 'admin', lastName: 'admin', email: 'admin@localhost.com', status: 1)
 				admin.password = 'admin'.encodeAsSHA1()
-				admin.role = Role.findByName('Admin')
+				admin.addToRoles(Role.findByName('Admin'))
 				admin.save()
 			}
 		}

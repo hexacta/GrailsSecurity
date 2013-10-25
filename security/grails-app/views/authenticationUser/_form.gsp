@@ -47,6 +47,6 @@
 	<label for="roles">
 		<g:message code="authenticationUser.roles.label" default="Roles" />
 	</label>
-	<g:select id="role" name="role.id" from="${Role.list()}" optionKey="id" required="" value="${authenticationUserInstance?.role?.id}" class="many-to-one"/>
+	<g:select name="roles" from="${Role.list()}" multiple="multiple" optionKey="id" value="${authenticationUserInstance?.roles*.id}" class="many-to-many"/>
 </div>
 

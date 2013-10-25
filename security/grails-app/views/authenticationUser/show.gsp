@@ -55,10 +55,12 @@
 				</li>
 				</g:if>
 			
-				<g:if test="${authenticationUserInstance?.role}">
+				<g:if test="${authenticationUserInstance?.roles}">
 				<li class="fieldcontain">
-					<span id="roles-label" class="property-label"><g:message code="authenticationUser.role.label" default="Roles" /></span>
-					<span class="property-value" aria-labelledby="roles-label"><g:link controller="role" action="show" id="${authenticationUserInstance.role.id}">${authenticationUserInstance.role?.encodeAsHTML()}</g:link></span>
+					<span id="roles-label" class="property-label"><g:message code="authenticationUser.roles.label" default="Roles" /></span>
+					<g:each in="${authenticationUserInstance.roles}" var="role">
+						<span class="property-value" aria-labelledby="roles-label"><g:link controller="role" action="show" id="${role.id}">${role.encodeAsHTML()}</g:link></span>
+					</g:each>
 				</li>
 				</g:if>
 				

@@ -32,12 +32,15 @@ class AuthenticationService {
 	private static ThreadLocal<AuthenticatedUser> processUser = new ThreadLocal<AuthenticatedUser>()
 
 	static nonAuthenticatedActions = [[controller:'authentication', action:'*']] as Set
+	static tokenAuthenticatedActions = [] as Set
 	
 	
 	def grailsApplication
 	@Transactional
 	def bootstrap(){
-		clearSessionTokens()
+		if(grailsApplication.config?.enhanced?.authentication?.forbidMultipleSessions){
+			clearSessionTokens()
+		}
 		if(!grailsApplication.config?.enhanced?.authentication?.disable?.bootstrap?.controllers){
 			createControllers()
 		}
@@ -63,12 +66,25 @@ class AuthenticationService {
 			new Component(name: componentId).save()
 		}
 	}
+	
 	@Transactional(readOnly = true)
-	def needsAuthentication(controllerName, actionName){
-		!nonAuthenticatedActions.find {
+	def getAuthenticationType(controllerName, actionName){
+		def matches = {
 			(it.controller == controllerName) && ((it.action == '*') || (it.action == actionName))
 		}
+		def type
+		if(nonAuthenticatedActions.find(matches)){
+			type = 'noFiltering'
+		}
+		else if(tokenAuthenticatedActions.find(matches)){
+			type = 'byToken'
+		}
+		else{
+			type = 'byCredentials'
+		}
+		type
 	}
+	
 	@Transactional
 	def clearSessionTokens(){
 		AuthenticationUser.list().each {
@@ -243,15 +259,13 @@ class AuthenticationService {
 		token.userObjectId = user.id
 		token.attributes['userObjectId'] = user.id
 		token.attributes['login'] = user.login
-		token.attributes['role'] = user.role.name
+		token.attributes['roles'] = user.roles.collect{ it.name }
 		token.attributes['firstName'] = user.firstName
 		token.attributes['lastName'] = user.lastName
 		token.attributes['email'] = user.email
-		def sessionToken = generateAuthenticationToken(user.login)
+		def sessionToken = fireEvent('CreateSessionToken',user.login)
 		token.attributes['sessionToken'] = sessionToken
 		setSessionUser(token)
-		user.sessionToken = sessionToken
-		user.save()
 		doLoggedIn(token)
 	}
 	
@@ -370,7 +384,8 @@ class AuthenticationService {
 	 */
 	@Transactional(readOnly = true)
 	def getUserDomainObjectById(id) {
-	    userDomainClass.get(id)
+	 
+		   userDomainClass.get(id)
 	}
 	@Transactional
 	boolean delete(login) {
@@ -451,6 +466,17 @@ class AuthenticationService {
 		},        // Called after a denied access
         // params has properties: request, response
         onUnauthorizedAccess: { params -> params.response.sendError(403) },
+		onCreateSessionToken: { login ->
+			def sessionToken = generateAuthenticationToken(login)
+			def user = fireEvent('FindByLogin', login)
+			user.sessionToken = sessionToken
+			user.save()
+			sessionToken
+		},
+		onCheckSessionToken: { token -> 
+			def user = AuthenticationUser.findBySessionToken(token)
+			return user as Boolean
+		},
 		onBootstrapPermissions: {params ->},
 		onBootstrapRoles: {params ->},
 		onBootstrapUsers: {params ->}
@@ -547,16 +573,17 @@ class AuthenticationService {
 		if ((user?.result == 0) && user?.loggedIn){
 			for(value in values.tokenize(',')) {
 				value = value.trim()
-				def loggedUserRole=user.attributes.role
-				Role userRole=Role.findByName(loggedUserRole)
-				valid = closure(userRole, value)
-				if(!valid){
-					def roleCollector
-					roleCollector = { closure(it, value) ? it : (it.roles.isEmpty() ? null : it.roles.find(roleCollector)) }
-					valid = userRole.roles.find(roleCollector) != null
-				}
-				if(valid){
-					return valid
+				user.attributes.roles.each { loggedUserRole ->
+					Role userRole=Role.findByName(loggedUserRole)
+					valid = closure(userRole, value)
+					if(!valid){
+						def roleCollector
+						roleCollector = { closure(it, value) ? it : (it.roles.isEmpty() ? null : it.roles.find(roleCollector)) }
+						valid = userRole.roles.find(roleCollector) != null
+					}
+					if(valid){
+						return valid
+					}
 				}
 			}
 		}

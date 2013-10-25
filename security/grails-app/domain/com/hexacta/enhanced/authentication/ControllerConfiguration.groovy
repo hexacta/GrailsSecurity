@@ -3,7 +3,7 @@ package com.hexacta.enhanced.authentication
 class ControllerConfiguration {
 	String name
 	String label
-	static belongsTo = Permission
+
 	static hasMany = [methods: Method]
 	
     static constraints = {

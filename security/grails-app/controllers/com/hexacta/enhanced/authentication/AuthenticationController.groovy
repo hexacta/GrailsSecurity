@@ -1,5 +1,6 @@
 package com.hexacta.enhanced.authentication
 
+import grails.converters.JSON;
 import grails.util.Environment
 
 import com.hexacta.enhanced.authentication.AuthenticatedUser
@@ -116,7 +117,7 @@ class AuthenticationController {
 			}
 			else{
 				// Default redirect
-				response.sendError(403)
+				authenticationService.fireEvent('unauthorizedAccess')
 			}
 		}
 		else{
@@ -135,7 +136,7 @@ class AuthenticationController {
 	}
 	
 	def changePassword(){
-		def user = AuthenticationUser.findByLogin(params.login)
+		def user = authenticationService.fireEvent('FindByLogin',params.login)
 		if(params.newPassword != params.newPasswordConfirmation){
 			flash.message = message(code: "authentication.passwordsDontMatch")
 			render(view: "resetPassword", model: [authenticationUserInstance: user])
@@ -153,6 +154,22 @@ class AuthenticationController {
 		user.save(flush: true)
 		flash.message = message(code: 'authentication.passwordUpdated')
 		render(view: "resetPassword", model: [authenticationUserInstance: user])
+	}
+	
+	def wsLogin(){
+		def login = params.user
+		def password = params.password // Hashed as SHA1
+		def user = authenticationService.fireEvent('FindByLogin', login)
+		if(!user || user.password != password){
+			authenticationService.fireEvent('UnauthorizedAccess', [response: response])
+		}
+		else {
+			def token = user.sessionToken
+			if(!token){ 
+				token = authenticationService.fireEvent('CreateSessionToken', login)
+			}
+			render ([token: token]) as JSON
+		}
 	}
 	
 	def mainPage = {

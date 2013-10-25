@@ -97,10 +97,7 @@ class AuthenticationUserController {
             }
         }
 
-        authenticationUserInstance.login = params.login
-		authenticationUserInstance.firstName = params.firstName
-		authenticationUserInstance.lastName = params.lastName
-		authenticationUserInstance.email = params.email
+        authenticationUserInstance.properties = params
 		authenticationUserInstance.status = AuthenticationUserState.VALID.id
 		if(params.password){
 			authenticationUserInstance.password = authenticationService.encodePassword(params.password)
@@ -111,7 +108,7 @@ class AuthenticationUserController {
             return
         }
 		// Re login the user if it's modifying himself 
-		if(authenticationService.getUserPrincipal().id == authenticationUserInstance.id){
+		if(authenticationService.getUserPrincipal()?.id == authenticationUserInstance?.id){
 			log.info("relogin")
 			authenticationService.updateSessionUser(authenticationUserInstance)
 		}

@@ -94,51 +94,6 @@ class AuthenticationUserControllerTests {
         assert model.authenticationUserInstance == authenticationUser
     }
 
-    void testUpdate() {
-        controller.update()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/authenticationUser/list'
-
-        response.reset()
-
-        populateValidParams(params)
-        def authenticationUser = new AuthenticationUser(params)
-
-        assert authenticationUser.save() != null
-
-        // test invalid parameters in update
-        params.id = authenticationUser.id
-        params["login"] = null
-
-        controller.update()
-
-        assert view == "/authenticationUser/edit"
-        assert model.authenticationUserInstance != null
-
-        authenticationUser.clearErrors()
-
-        populateValidParams(params)
-        controller.update()
-
-        assert response.redirectedUrl == "/authenticationUser/show/$authenticationUser.id"
-        assert flash.message != null
-
-        //test outdated version number
-        response.reset()
-        authenticationUser.clearErrors()
-
-        populateValidParams(params)
-        params.id = authenticationUser.id
-        params.version = -1
-        controller.update()
-
-        assert view == "/authenticationUser/edit"
-        assert model.authenticationUserInstance != null
-        assert model.authenticationUserInstance.errors.getFieldError('version')
-        assert flash.message != null
-    }
-
     void testDelete() {
         controller.delete()
         assert flash.message != null

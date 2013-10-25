@@ -26,9 +26,10 @@ log4j = {
     warn   'org.mortbay.log'
 }
 
-enhanced.authentication.passwordResetTimeout = 3
-enhanced.authentication.forbidMultipleSessions = true
+enhanced.authentication.passwordResetTimeout = 30
+enhanced.authentication.forbidMultipleSessions = false
 enhanced.authentication.disable.bootstrap.controllers = false
+enhanced.authentication.disable.filter = false
 grails.views.default.codec="none" // none, html, base64
 grails.views.gsp.encoding="UTF-8"
 /*

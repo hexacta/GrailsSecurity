@@ -7,12 +7,11 @@ class AuthenticationUser {
 	String password
 	String email
 	int status = AuthenticationUserState.NEW.id
-	Role role
 	String sessionToken
 	String passwordResetToken
 	Date passwordResetTimeout
 	boolean allowDeletion = true
-
+	static hasMany = [roles: Role]
 	static constraints = {
 		login(nullable: false, blank: false, size:1..100, unique: true)
 		firstName(nullable: false, blank: false, size:1..100)
