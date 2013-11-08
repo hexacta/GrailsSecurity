@@ -477,6 +477,9 @@ class AuthenticationService {
 			def user = AuthenticationUser.findBySessionToken(token)
 			return user as Boolean
 		},
+		onPostTokenLogin: { login ->
+			[:]
+		},
 		onBootstrapPermissions: {params ->},
 		onBootstrapRoles: {params ->},
 		onBootstrapUsers: {params ->}

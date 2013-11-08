@@ -168,7 +168,9 @@ class AuthenticationController {
 			if(!token){ 
 				token = authenticationService.fireEvent('CreateSessionToken', login)
 			}
-			render ([token: token]) as JSON
+			def result = authenticationService.fireEvent('PostTokenLogin', login)
+			result.token = token
+			render result as JSON
 		}
 	}
 	

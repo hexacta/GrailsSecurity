@@ -14,7 +14,6 @@
     <resource>com.hexacta.enhanced.authentication.AuthenticationController</resource>
     <resource>com.hexacta.enhanced.authentication.AuthenticationUserController</resource>
     <resource>com.hexacta.enhanced.authentication.RoleController</resource>
-    <resource>enhanced.authentication.WsTestController</resource>
     <resource>com.hexacta.enhanced.authentication.AuthenticationUser</resource>
     <resource>com.hexacta.enhanced.authentication.Component</resource>
     <resource>com.hexacta.enhanced.authentication.ControllerConfiguration</resource>
@@ -41,8 +40,8 @@
     </compile>
     <runtime>
       <plugin group='org.grails.plugins' name='hibernate' version='2.2.4' />
-      <plugin group='org.grails.plugins' name='resources' version='1.1.6' />
       <plugin group='org.grails.plugins' name='jquery' version='1.7.2' />
+      <plugin group='org.grails.plugins' name='resources' version='1.1.6' />
     </runtime>
   </plugins>
   <runtimePluginRequirements />
