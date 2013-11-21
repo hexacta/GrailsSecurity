@@ -34,7 +34,9 @@ class AuthenticationService {
 	static nonAuthenticatedActions = [[controller:'authentication', action:'*']] as Set
 	static tokenAuthenticatedActions = [] as Set
 	
-	
+	static userDomainClass = AuthenticationUser
+	static roleDomainClass = Role
+
 	def grailsApplication
 	@Transactional
 	def bootstrap(){
@@ -485,9 +487,6 @@ class AuthenticationService {
 		onBootstrapUsers: {params ->}
     ]
 
-    // This has to be static so that the default events can use it
-    static userDomainClass = AuthenticationUser
-
     void configChanged() {
         log.info "Authentication reloading settings from config"
         // Take events from config if found
@@ -577,7 +576,7 @@ class AuthenticationService {
 			for(value in values.tokenize(',')) {
 				value = value.trim()
 				user.attributes.roles.each { loggedUserRole ->
-					Role userRole=Role.findByName(loggedUserRole)
+					Role userRole=roleDomainClass.findByName(loggedUserRole)
 					valid = closure(userRole, value)
 					if(!valid){
 						def roleCollector

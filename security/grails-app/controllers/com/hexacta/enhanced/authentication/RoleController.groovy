@@ -118,6 +118,26 @@ class RoleController {
 		render(template: "componentsTable", model: [roleInstance: roleInstance])
 	}
 
+	def addRole() {
+		println params
+		def roleInstance = new Role(params)
+		def childRole = Role.findByName(params.roleName)
+		if(childRole){
+			roleInstance.addToRoles(childRole)
+		}
+		else{
+			flash.message = message(code: 'default.role.not.found.message', args: [params.roleName])
+		}
+		render(template: "rolesTable", model: [roleInstance: roleInstance])
+	}
+	
+	def removeRole() {
+		def roleInstance = new Role(params)
+		def childRole = Role.get(params.id)
+		roleInstance.removeFromRoles(childRole)
+		render(template: "rolesTable", model: [roleInstance: roleInstance])
+	}
+	
 	@Visible(key="update")
     def update(Long id, Long version) {
         def roleInstance = Role.get(id)

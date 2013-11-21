@@ -32,6 +32,13 @@
 				</li>
 				</g:if>
 			
+				<g:if test="${roleInstance?.parentRole}">
+					<li class="fieldcontain">
+						<span id="parentRole-label" class="property-label"><g:message code="role.parentRole.label" default="Parent Role" /></span>
+						<span class="property-value" aria-labelledby="parentRole-label"><g:link controller="role" action="show" id="${roleInstance.parentRole.id}">${roleInstance.parentRole.encodeAsHTML()}</g:link></span>
+					</li>
+				</g:if>
+
 				<g:if test="${roleInstance?.roles}">
 					<li class="fieldcontain">
 						<span id="roles-label" class="property-label"><g:message code="role.roles.label" default="Roles" /></span>

@@ -16,13 +16,6 @@
 	<g:checkBox name="allowDeletion" value="${roleInstance?.allowDeletion}" />
 </div>
 
-<div class="fieldcontain ${hasErrors(bean: roleInstance, field: 'roles', 'error')} ">
-	<label for="roles">
-		<g:message code="role.roles.label" default="Roles" />
-	</label>
-	<g:select name="roles" from="${Role.findAllByNameNotEqual(roleInstance.name)}" multiple="multiple" optionKey="id" size="5" value="${roleInstance?.roles*.id}" class="many-to-many"/>
-</div>
-
 <div class="fieldcontain">
 	<label for="permissionController">
 		<g:message code="permission.label" default="Permission" />
@@ -36,12 +29,23 @@
 </div>
 
 <div class="fieldcontain">
-	<label for="controller">
+	<label for="componentName">
 		<g:message code="component.label" default="Component" />
 	</label>
 	<g:select name="componentName" from="${Component.list()}" valueMessagePrefix="security"/>
 	<g:submitToRemote action="addComponent" update="componentsTable" value="${message(code: 'default.button.addComponent', default: 'Add Component')}"/>
 	<div id="componentsTable">
 		<g:render template="componentsTable"/>	
+	</div>
+</div>
+
+<div class="fieldcontain">
+	<label for="roleName">
+		<g:message code="role.label" default="Inherited Roles" />
+	</label>
+	<g:select name="roleName" from="${roleInstance.findPossibleChildren()}" valueMessagePrefix="security"/>
+	<g:submitToRemote action="addRole" update="rolesTable" value="${message(code: 'default.button.addRole', default: 'Add Role')}"/>
+	<div id="rolesTable">
+		<g:render template="rolesTable"/>	
 	</div>
 </div>
