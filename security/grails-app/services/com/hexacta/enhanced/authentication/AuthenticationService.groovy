@@ -575,12 +575,11 @@ class AuthenticationService {
 		if ((user?.result == 0) && user?.loggedIn){
 			for(value in values.tokenize(',')) {
 				value = value.trim()
-				user.attributes.roles.each { loggedUserRole ->
+				for(loggedUserRole in user.attributes.roles) {
 					Role userRole=roleDomainClass.findByName(loggedUserRole)
 					valid = closure(userRole, value)
 					if(!valid){
-						def roleCollector
-						roleCollector = { closure(it, value) ? it : (it.roles.isEmpty() ? null : it.roles.find(roleCollector)) }
+						def roleCollector = { closure(it, value) ? it : (it.roles.isEmpty() ? null : it.roles.find(roleCollector)) }
 						valid = userRole.roles.find(roleCollector) != null
 					}
 					if(valid){
